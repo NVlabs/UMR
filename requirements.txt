@@ -1,0 +1,11 @@
+ipdb==0.12.2
+absl-py==0.7.1
+tqdm==4.19.9
+imageio==2.5.0
+meshzoo==0.4.3
+numpy==1.16.3
+scipy==1.2.1
+torch==1.1.0
+torchvision==0.2.2
+termcolor==1.1.0
+opencv-python==4.3.0.36
