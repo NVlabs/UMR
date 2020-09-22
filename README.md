@@ -29,7 +29,7 @@ Please cite our paper if you find this code useful for your research.
   ```
   git clone https://github.com/NVlabs/UMR $ROOTPATH
   ```
-  The pre-trained weights and semantic template can be downloaded from [Google drive](https://drive.google.com/file/d/1lwZu6Rl8iL9KZBLvK4dIneB_dKMtC9uY/view?usp=sharing) and unzip at `$ROOTPATH/UMR/`.
+  We are working on to release the pre-trained model, please contact the authors for more details.
 
 - Install packages:
 
