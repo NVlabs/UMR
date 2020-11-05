@@ -9,6 +9,14 @@ import torch
 
 class TwoAFCDataset(BaseDataset):
     def initialize(self, dataroots, load_size=64):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+            dataroots: (array): write your description
+            load_size: (int): write your description
+        """
         if(not isinstance(dataroots,list)):
             dataroots = [dataroots,]
         self.roots = dataroots
@@ -40,6 +48,13 @@ class TwoAFCDataset(BaseDataset):
         self.judge_paths = sorted(self.judge_paths)
 
     def __getitem__(self, index):
+        """
+        Retrieves image
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         p0_path = self.p0_paths[index]
         p0_img_ = Image.open(p0_path).convert('RGB')
         p0_img = self.transform(p0_img_)
@@ -62,4 +77,10 @@ class TwoAFCDataset(BaseDataset):
             'p0_path': p0_path, 'p1_path': p1_path, 'ref_path': ref_path, 'judge_path': judge_path}
 
     def __len__(self):
+        """
+        Returns the number of paths.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.p0_paths)

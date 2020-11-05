@@ -7,6 +7,13 @@ import soft_renderer.cuda.create_texture_image as create_texture_image_cuda
 
 
 def create_texture_image(textures, texture_res=16):
+    """
+    Creates a texture.
+
+    Args:
+        textures: (todo): write your description
+        texture_res: (todo): write your description
+    """
     num_faces = textures.shape[0]
     tile_width = int((num_faces - 1.) ** 0.5) + 1
     tile_height = int((num_faces - 1.) / tile_width) + 1
@@ -37,6 +44,17 @@ def create_texture_image(textures, texture_res=16):
 
 
 def save_obj(filename, vertices, faces, textures=None, texture_res=16, texture_type='surface'):
+    """
+    Save a trimesh object toml file.
+
+    Args:
+        filename: (str): write your description
+        vertices: (array): write your description
+        faces: (todo): write your description
+        textures: (todo): write your description
+        texture_res: (todo): write your description
+        texture_type: (str): write your description
+    """
     assert vertices.ndimension() == 2
     assert faces.ndimension() == 2
     assert texture_type in ['surface', 'vertex']
@@ -94,6 +112,13 @@ def save_obj(filename, vertices, faces, textures=None, texture_res=16, texture_t
 
 
 def save_voxel(filename, voxel):
+    """
+    Save a voxel object as a voxel.
+
+    Args:
+        filename: (str): write your description
+        voxel: (todo): write your description
+    """
     vertices = []
     for i in range(voxel.shape[0]):
         for j in range(voxel.shape[1]):

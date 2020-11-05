@@ -76,6 +76,12 @@ opts = flags.FLAGS
 
 class ShapenetTrainer(train_utils.Trainer):
     def define_model(self):
+        """
+        Define the model
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
 
         # define model
@@ -118,6 +124,12 @@ class ShapenetTrainer(train_utils.Trainer):
         return
 
     def init_dataset(self):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.data_module = cub_data
         self.dataloader = self.data_module.data_loader(opts)
@@ -126,6 +138,12 @@ class ShapenetTrainer(train_utils.Trainer):
             std=[0.229, 0.224, 0.225])
 
     def define_criterion(self):
+        """
+        Define the image for the image
+
+        Args:
+            self: (todo): write your description
+        """
         # shape objectives
         self.mask_loss_fn = loss_utils.MultiMaskLoss(opts.image_size,
                                                        opts.renderer_type,
@@ -164,6 +182,13 @@ class ShapenetTrainer(train_utils.Trainer):
         self.part_loss_fn = torch.nn.DataParallel(self.part_loss_fn)
 
     def set_input(self, batch):
+        """
+        Set the inputs of the graph.
+
+        Args:
+            self: (todo): write your description
+            batch: (todo): write your description
+        """
         opts = self.opts
 
         input_img_tensor = batch['img'].type(torch.FloatTensor)
@@ -199,6 +224,12 @@ class ShapenetTrainer(train_utils.Trainer):
             self.dts_barrier = dt_tensor.unsqueeze(1)
 
     def forward(self):
+        """
+        Forward computation
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         outputs = self.model.forward(self.input_imgs)
 
@@ -316,6 +347,12 @@ class ShapenetTrainer(train_utils.Trainer):
         self.total_loss += self.corr_loss * opts.vertex_loss_wt
 
     def get_current_visuals(self):
+        """
+        Return a set of the current image
+
+        Args:
+            self: (todo): write your description
+        """
         vis_dict = {}
         
         nb, nf, _, nc = self.tex.size()
@@ -385,6 +422,12 @@ class ShapenetTrainer(train_utils.Trainer):
         return vis_dict
 
     def get_current_scalars(self):
+        """
+        Returns a dictionary of the scalars.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         sc_dict = OrderedDict([
             ('smoothed_total_loss', self.smoothed_total_loss),
@@ -407,6 +450,12 @@ class ShapenetTrainer(train_utils.Trainer):
         return sc_dict
 
     def train(self):
+        """
+        Perform the training.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.visualizer = TfVisualizer(opts)
         self.smoothed_total_loss = 0
@@ -474,6 +523,12 @@ class ShapenetTrainer(train_utils.Trainer):
                 self.save(epoch+1)
 
 def main(_):
+    """
+    Main function.
+
+    Args:
+        _: (int): write your description
+    """
     torch.manual_seed(0)
     trainer = ShapenetTrainer(opts)
     trainer.init_training()

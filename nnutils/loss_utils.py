@@ -26,6 +26,13 @@ from ..utils import image as image_utils
 
 class edge_regularization(nn.Module):
     def __init__(self, edges):
+        """
+        Init edge edges.
+
+        Args:
+            self: (todo): write your description
+            edges: (str): write your description
+        """
         super(edge_regularization,self).__init__()
         self.edges = edges.long()
 
@@ -39,6 +46,14 @@ class edge_regularization(nn.Module):
         return l2_loss(pred[:, self.edges[:, 0]], pred[:, self.edges[:, 1]]) * pred.size(-1)
 
 def neg_iou_loss(predict, target, avg = True):
+    """
+    Negative loss.
+
+    Args:
+        predict: (todo): write your description
+        target: (todo): write your description
+        avg: (todo): write your description
+    """
     dims = tuple(range(predict.ndimension())[1:])
     intersect = (predict * target).sum(dims)
     union = (predict + target - predict * target).sum(dims) + 1e-6
@@ -123,10 +138,22 @@ def deform_l2reg(V):
     return torch.mean(torch.norm(V, p=2, dim=1))
 
 def sym_reg(verts):
+    """
+    Compute the mean of the linear regression.
+
+    Args:
+        verts: (str): write your description
+    """
     return torch.mean(torch.abs(verts[:,:,1]))
 
 class PerceptualTextureLoss(object):
     def __init__(self):
+        """
+        Initialize the loss loss.
+
+        Args:
+            self: (todo): write your description
+        """
         from .perceptual_loss import PerceptualLoss
         self.perceptual_loss = PerceptualLoss()
 
@@ -151,6 +178,15 @@ class PerceptualTextureLoss(object):
 
 class TexCycle(nn.Module):
     def __init__(self, im_size = 256, nf = 1280, eps = 1e-12):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            im_size: (int): write your description
+            nf: (todo): write your description
+            eps: (float): write your description
+        """
         super(TexCycle,self).__init__()
 
     def forward(self, flow, prob, aggr_info):
@@ -194,6 +230,17 @@ def entropy_loss(A):
 class CorrLossChamfer(nn.Module):
     def __init__(self, scops_path, image_size,
                  weights = torch.Tensor([0.45, 0.45, 0.05, 0.05])):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            scops_path: (str): write your description
+            image_size: (int): write your description
+            weights: (array): write your description
+            torch: (todo): write your description
+            Tensor: (str): write your description
+        """
         super(CorrLossChamfer,self).__init__()
         """
         Caculate Chamfer distance of four parts.
@@ -223,6 +270,19 @@ class CorrLossChamfer(nn.Module):
         self.weights = weights
 
     def forward(self, head_points, belly_points, neck_points, back_points, verts, cams, avg = True):
+        """
+        Forward forward forward vertices.
+
+        Args:
+            self: (todo): write your description
+            head_points: (todo): write your description
+            belly_points: (todo): write your description
+            neck_points: (todo): write your description
+            back_points: (todo): write your description
+            verts: (str): write your description
+            cams: (todo): write your description
+            avg: (todo): write your description
+        """
         bs = head_points.size(0)
 
         head_vert_coords = verts[:, self.head_vertices, :]
@@ -254,12 +314,32 @@ class CorrLossChamfer(nn.Module):
 
 class MultiMaskLoss(nn.Module):
     def __init__(self, image_size = 256, renderer_type = "softmax", num_hypo_cams = 8):
+        """
+        Initialize image.
+
+        Args:
+            self: (todo): write your description
+            image_size: (int): write your description
+            renderer_type: (todo): write your description
+            num_hypo_cams: (int): write your description
+        """
         super(MultiMaskLoss, self).__init__()
         self.renderer = SoftRenderer(image_size, renderer_type)
         self.num_hypo_cams = num_hypo_cams
         self.image_size = image_size
 
     def forward(self, vs, fs, cams_all_hypo, cam_probs, masks_gt):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            vs: (todo): write your description
+            fs: (todo): write your description
+            cams_all_hypo: (todo): write your description
+            cam_probs: (todo): write your description
+            masks_gt: (todo): write your description
+        """
         bs = vs.size(0)
         # prepare vertices, faces, cameras
         pred_vs = vs.unsqueeze(1).repeat(1, self.num_hypo_cams, 1, 1).view(-1, vs.size(1), 3)
@@ -283,6 +363,18 @@ class MultiTextureLoss(nn.Module):
     def __init__(self, samples_per_gpu = 32, num_hypo_cams = 8,
                  image_size = 256, renderer_type = "softmax", texture_loss_type="perceptual",
                  renderer = "smr"):
+        """
+        Initialize the texture.
+
+        Args:
+            self: (todo): write your description
+            samples_per_gpu: (todo): write your description
+            num_hypo_cams: (int): write your description
+            image_size: (int): write your description
+            renderer_type: (todo): write your description
+            texture_loss_type: (todo): write your description
+            renderer: (bool): write your description
+        """
         super(MultiTextureLoss, self).__init__()
         if(renderer in "smr"):
             self.renderer = SoftRenderer(image_size, renderer_type)
@@ -303,6 +395,23 @@ class MultiTextureLoss(nn.Module):
 
 
     def forward(self, vs, fs, cams_all_hypo, cam_probs, proj_cam, rgbs, masks_gt, masks_pred, tx, tex_flow, dts_barrier):
+        """
+        Forward computation to forward : np. array
+
+        Args:
+            self: (todo): write your description
+            vs: (todo): write your description
+            fs: (todo): write your description
+            cams_all_hypo: (todo): write your description
+            cam_probs: (todo): write your description
+            proj_cam: (todo): write your description
+            rgbs: (todo): write your description
+            masks_gt: (todo): write your description
+            masks_pred: (todo): write your description
+            tx: (todo): write your description
+            tex_flow: (todo): write your description
+            dts_barrier: (todo): write your description
+        """
         bs = vs.size(0)
         # prepare vertices, faces, textures and cameras
         pred_vs = vs.unsqueeze(1).repeat(1, self.num_hypo_cams, 1, 1).view(-1, vs.size(1), 3)
@@ -340,6 +449,20 @@ class part_matching_loss(nn.Module):
                  im_size = 256, batch_size = 32,
                  loss_type = 'mse', tex_size=6,
                  num_cam = 1):
+        """
+        Initialize image.
+
+        Args:
+            self: (todo): write your description
+            scops_path: (str): write your description
+            uv_sampler: (todo): write your description
+            num_sym_faces: (int): write your description
+            im_size: (int): write your description
+            batch_size: (int): write your description
+            loss_type: (str): write your description
+            tex_size: (int): write your description
+            num_cam: (int): write your description
+        """
         super(part_matching_loss, self).__init__()
 
         # load mean semantic uv map
@@ -382,6 +505,18 @@ class part_matching_loss(nn.Module):
         self.loss_type = loss_type
 
     def forward(self, verts, faces, cams, part_segs, cam_probs = None, avg = True):
+        """
+        R forward forward computation.
+
+        Args:
+            self: (todo): write your description
+            verts: (str): write your description
+            faces: (todo): write your description
+            cams: (todo): write your description
+            part_segs: (todo): write your description
+            cam_probs: (todo): write your description
+            avg: (todo): write your description
+        """
         total_loss = 0
         projs = []
         bs = verts.size(0)

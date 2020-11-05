@@ -11,6 +11,13 @@ import numpy as np
 import torchvision.utils as vutils
 
 def create_grid(F_size, GPU=True):
+    """
+    Creates a grid with the grid.
+
+    Args:
+        F_size: (int): write your description
+        GPU: (str): write your description
+    """
     b, c, h, w = F_size
     theta = torch.tensor([[1,0,0],[0,1,0]])
     theta = theta.unsqueeze(0).repeat(b,1,1)
@@ -24,6 +31,12 @@ def create_grid(F_size, GPU=True):
     return grid
 
 def to_numpy(tensor):
+    """
+    Convert tensor to tensor.
+
+    Args:
+        tensor: (todo): write your description
+    """
     if torch.is_tensor(tensor):
         return tensor.cpu().numpy()
     elif type(tensor).__module__ != 'numpy':
@@ -32,6 +45,12 @@ def to_numpy(tensor):
     return tensor
 
 def to_torch(ndarray):
+    """
+    Convert numpy array to ndarray.
+
+    Args:
+        ndarray: (array): write your description
+    """
     if type(ndarray).__module__ == 'numpy':
         return torch.from_numpy(ndarray)
     elif not torch.is_tensor(ndarray):
@@ -40,6 +59,14 @@ def to_torch(ndarray):
     return ndarray
 
 def draw_labelmap(img,pt,sigma):
+    """
+    Draw the labelmap
+
+    Args:
+        img: (array): write your description
+        pt: (int): write your description
+        sigma: (float): write your description
+    """
     img = to_numpy(img)
 
     # Check that any part of the gaussian is in-bounds
@@ -69,6 +96,14 @@ def draw_labelmap(img,pt,sigma):
     return to_torch(img)
 
 def vis_part_heatmaps(response_maps, threshold=0.5, prefix=''):
+    """
+    Computes a heatmaps.
+
+    Args:
+        response_maps: (todo): write your description
+        threshold: (float): write your description
+        prefix: (str): write your description
+    """
     B,K,H,W = response_maps.shape
     part_response = np.zeros((B,K,H,W,3)).astype(np.uint8)
 

@@ -53,6 +53,12 @@ opts = flags.FLAGS
 
 class ShapenetTester(test_utils.Tester):
     def define_model(self):
+        """
+        Define the model
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
 
         # define model
@@ -80,6 +86,12 @@ class ShapenetTester(test_utils.Tester):
         return
 
     def init_dataset(self):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.data_module = cub_data
         self.dataloader = self.data_module.data_loader(opts)
@@ -88,6 +100,13 @@ class ShapenetTester(test_utils.Tester):
             std=[0.229, 0.224, 0.225])
 
     def load_my_state_dict(self, resume_dir):
+        """
+        Loads a dictionary of the states_dir.
+
+        Args:
+            self: (todo): write your description
+            resume_dir: (str): write your description
+        """
         saved_state_dict = torch.load(resume_dir)
         # registered buff tensors may have different batch size in training
         # so we do not load them from the pretrained models
@@ -101,6 +120,13 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green("Loaded model from {}.".format(resume_dir)))
 
     def set_input(self, batch):
+        """
+        Set the input tensor.
+
+        Args:
+            self: (todo): write your description
+            batch: (todo): write your description
+        """
         opts = self.opts
 
         input_img_tensor = batch['img'].type(torch.FloatTensor)
@@ -131,6 +157,12 @@ class ShapenetTester(test_utils.Tester):
         return torch.argmax(arr_, dim = 1)
 
     def compute_uv(self):
+        """
+        Compute the model to predict.
+
+        Args:
+            self: (todo): write your description
+        """
         dataloader = iter(self.dataloader)
 
         self.best_shape = None
@@ -305,6 +337,12 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green("Semantic template saved at {}.".format(opts.out_dir)))
 
 def set_seed(seed):
+    """
+    Benchmark a random seed.
+
+    Args:
+        seed: (int): write your description
+    """
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     torch.manual_seed(seed)
@@ -313,6 +351,12 @@ def set_seed(seed):
     random.seed(seed)
 
 def main(_):
+    """
+    Main function.
+
+    Args:
+        _: (int): write your description
+    """
     set_seed(0)
     tester = ShapenetTester(opts)
     tester.init_testing()

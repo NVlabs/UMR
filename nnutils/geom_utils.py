@@ -204,6 +204,12 @@ def convert_ax_angle_to_quat(ax, ang):
     return quat
 
 def ang2quat(angles):
+    """
+    Convert a rotation to rotation angle.
+
+    Args:
+        angles: (array): write your description
+    """
     # convert from angles to quaternion
     axis = torch.eye(3).float().cuda()
     ang = torch.tanh(angles)

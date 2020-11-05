@@ -35,6 +35,12 @@ import torch
 
 
 def create_sphere(n_subdivide=3):
+    """
+    Create a mesh from a mesh.
+
+    Args:
+        n_subdivide: (str): write your description
+    """
     # 3 makes 642 verts, 1280 faces,
     # 4 makes 2562 verts, 5120 faces
     verts, faces = meshzoo.iso_sphere(n_subdivide)
@@ -213,6 +219,13 @@ def compute_edges2verts(verts, faces):
     return result
 
 def compute_vert2kp(verts, mean_shape):
+    """
+    Compute the 2d2k of the 2d array.
+
+    Args:
+        verts: (str): write your description
+        mean_shape: (int): write your description
+    """
     # verts: N x 3
     # mean_shape: 3 x K (K=15)
     #
@@ -230,6 +243,12 @@ def compute_vert2kp(verts, mean_shape):
     return vert2kp
 
 def get_spherical_coords(X):
+    """
+    Get spherical coordinates of spherical coordinates.
+
+    Args:
+        X: (todo): write your description
+    """
     # X is N x 3
     rad = np.linalg.norm(X, axis=1)
     # Inclination
@@ -273,6 +292,14 @@ def compute_uvsampler(verts, faces, tex_size=2):
 
 
 def append_obj(mf_handle, vertices, faces):
+    """
+    Add a trimesh_handle.
+
+    Args:
+        mf_handle: (todo): write your description
+        vertices: (array): write your description
+        faces: (todo): write your description
+    """
     for vx in range(vertices.shape[0]):
         mf_handle.write('v {:f} {:f} {:f}\n'.format(vertices[vx, 0], vertices[vx, 1], vertices[vx, 2]))
     for fx in range(faces.shape[0]):

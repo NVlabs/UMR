@@ -68,10 +68,23 @@ class Mesh(object):
 
     @property
     def faces(self):
+        """
+        : class : ~zhmcclient. face.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._faces
 
     @faces.setter
     def faces(self, faces):
+        """
+        Update faces in faces.
+
+        Args:
+            self: (todo): write your description
+            faces: (list): write your description
+        """
         # need check tensor
         self._faces = faces
         self.num_faces = self._faces.shape[1]
@@ -81,10 +94,23 @@ class Mesh(object):
 
     @property
     def vertices(self):
+        """
+        A list of vertices of vertices.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._vertices
 
     @vertices.setter
     def vertices(self, vertices):
+        """
+        Update the vertices in the mesh.
+
+        Args:
+            self: (todo): write your description
+            vertices: (array): write your description
+        """
         # need check tensor
         self._vertices = vertices
         self.num_vertices = self._vertices.shape[1]
@@ -94,15 +120,34 @@ class Mesh(object):
 
     @property
     def textures(self):
+        """
+        A list of texts.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._textures
 
     @textures.setter
     def textures(self, textures):
+        """
+        Set textures
+
+        Args:
+            self: (todo): write your description
+            textures: (todo): write your description
+        """
         # need check tensor
         self._textures = textures
 
     @property
     def face_vertices(self):
+        """
+        The face vertices in face. face.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._face_vertices_update:
             self._face_vertices = srf.face_vertices(self.vertices, self.faces)
             self._face_vertices_update = False
@@ -110,6 +155,12 @@ class Mesh(object):
 
     @property
     def surface_normals(self):
+        """
+        Return the normals of the mesh.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._surface_normals_update:
             v10 = self.face_vertices[:, :, 0] - self.face_vertices[:, :, 1]
             v12 = self.face_vertices[:, :, 2] - self.face_vertices[:, :, 1]
@@ -119,6 +170,12 @@ class Mesh(object):
 
     @property
     def vertex_normals(self):
+        """
+        The vertex normals
+
+        Args:
+            self: (todo): write your description
+        """
         if self._vertex_normals_update:
             self._vertex_normals = srf.vertex_normals(self.vertices, self.faces)
             self._vertex_normals_update = False
@@ -126,6 +183,12 @@ class Mesh(object):
 
     @property
     def face_textures(self):
+        """
+        The face vertices : a face_type.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.texture_type in ['surface']:
             return self.textures
         elif self.texture_type in ['vertex']:
@@ -134,12 +197,24 @@ class Mesh(object):
             raise ValueError('texture type not applicable')
 
     def fill_back_(self):
+        """
+        Fill out the back indexes.
+
+        Args:
+            self: (todo): write your description
+        """
         if not self._fill_back:
             self.faces = torch.cat((self.faces, self.faces[:, :, [2, 1, 0]]), dim=1)
             self.textures = torch.cat((self.textures, self.textures), dim=1)
             self._fill_back = True
 
     def reset_(self):
+        """
+        Reset the vertices.
+
+        Args:
+            self: (todo): write your description
+        """
         self.vertices = self._origin_vertices
         self.faces = self._origin_faces
         self.textures = self._origin_textures
@@ -165,6 +240,15 @@ class Mesh(object):
         return cls(vertices, faces, textures, texture_res, texture_type)
 
     def save_obj(self, filename_obj, save_texture=False, texture_res_out=16):
+        """
+        Save a texture as a texture.
+
+        Args:
+            self: (todo): write your description
+            filename_obj: (str): write your description
+            save_texture: (bool): write your description
+            texture_res_out: (bool): write your description
+        """
         if self.batch_size != 1:
             raise ValueError('Could not save when batch size >= 1')
         if save_texture:
@@ -175,5 +259,12 @@ class Mesh(object):
             srf.save_obj(filename_obj, self.vertices[0], self.faces[0], textures=None)
 
     def voxelize(self, voxel_size=32):
+        """
+        Voxelize voxelize of a voxels.
+
+        Args:
+            self: (todo): write your description
+            voxel_size: (int): write your description
+        """
         face_vertices_norm = self.face_vertices * voxel_size / (voxel_size - 1) + 0.5
         return srf.voxelization(face_vertices_norm, voxel_size, False)

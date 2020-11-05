@@ -39,11 +39,26 @@ class GradientReversalFunction(Function):
 
     @staticmethod
     def forward(ctx, x, lambda_):
+        """
+        Forward forward forward.
+
+        Args:
+            ctx: (todo): write your description
+            x: (todo): write your description
+            lambda_: (todo): write your description
+        """
         ctx.lambda_ = lambda_
         return x.clone()
 
     @staticmethod
     def backward(ctx, grads):
+        """
+        Computes the backward backward.
+
+        Args:
+            ctx: (todo): write your description
+            grads: (todo): write your description
+        """
         lambda_ = ctx.lambda_
         lambda_ = grads.new_tensor(lambda_)
         dx = -lambda_ * grads
@@ -51,15 +66,38 @@ class GradientReversalFunction(Function):
 
 class GradientReversal(torch.nn.Module):
     def __init__(self, lambda_=1):
+        """
+        Initialize the superclass.
+
+        Args:
+            self: (todo): write your description
+            lambda_: (float): write your description
+        """
         super(GradientReversal, self).__init__()
         self.lambda_ = lambda_
 
     def forward(self, x):
+        """
+        Evaluate of x.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         return GradientReversalFunction.apply(x, self.lambda_)
 
 
 class Discriminator(nn.Module):
     def __init__(self, lambda_, in_dim=1, img_size=64):
+        """
+        Initialize the ndarray.
+
+        Args:
+            self: (todo): write your description
+            lambda_: (float): write your description
+            in_dim: (int): write your description
+            img_size: (int): write your description
+        """
         super(Discriminator, self).__init__()
         fc_size = int(img_size // 16)
         self.grl = GradientReversal(lambda_ = lambda_)
@@ -77,6 +115,13 @@ class Discriminator(nn.Module):
         self.in_dim = in_dim
 
     def forward(self, imgs):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            imgs: (todo): write your description
+        """
         b = imgs.size(0)
         imgs_grl = self.grl(imgs)
         conv_feat = F.relu(self.img_conv(imgs_grl))

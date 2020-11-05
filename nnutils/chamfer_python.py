@@ -27,6 +27,13 @@
 import torch
 
 def pairwise_dist(x, y):
+    """
+    Calculate pairwise distance.
+
+    Args:
+        x: (array): write your description
+        y: (todo): write your description
+    """
     xx, yy, zz = torch.mm(x, x.t()), torch.mm(y, y.t()), torch.mm(x, y.t())
     rx = xx.diag().unsqueeze(0).expand_as(xx)
     ry = yy.diag().unsqueeze(0).expand_as(yy)
@@ -35,6 +42,14 @@ def pairwise_dist(x, y):
 
 
 def NN_loss(x, y, dim=0):
+    """
+    NN loss.
+
+    Args:
+        x: (todo): write your description
+        y: (todo): write your description
+        dim: (int): write your description
+    """
     dist = pairwise_dist(x, y)
     values, indices = dist.min(dim=dim)
     return values.mean()

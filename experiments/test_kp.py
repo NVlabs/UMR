@@ -68,6 +68,12 @@ color_table = np.array([[0,255,0],
                         ])
 
 def collate_pair_batch(examples):
+    """
+    Collate batches of examples.
+
+    Args:
+        examples: (list): write your description
+    """
     batch = {}
     for key in examples[0]:
         if key in ['kp_uv', 'img', 'inds', 'neg_inds', 'mask', 'kp', 'pos_inds', 'sfm_pose', 'anchor']:
@@ -80,6 +86,12 @@ def collate_pair_batch(examples):
 
 class ShapenetTester(test_utils.Tester):
     def define_model(self):
+        """
+        Define a model from an image
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
 
         # define model
@@ -99,6 +111,13 @@ class ShapenetTester(test_utils.Tester):
         return
 
     def load_my_state_dict(self, resume_dir):
+        """
+        Load a dictionary of the state variables. model.
+
+        Args:
+            self: (todo): write your description
+            resume_dir: (str): write your description
+        """
         saved_state_dict = torch.load(resume_dir)
         # buffered tensors may have different batch size when inference
         # so we do not load them
@@ -113,6 +132,12 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green("Loaded model from {}.".format(resume_dir)))
 
     def init_dataset(self):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         dataloader_fn = cub_data.cub_test_pair_dataloader
         self.dl_img1 = dataloader_fn(opts, 1)
@@ -193,6 +218,12 @@ class ShapenetTester(test_utils.Tester):
         return kp2fg.view(1, kp_num, 2).cpu()
 
     def predict(self):
+        """
+        Predict the model
+
+        Args:
+            self: (array): write your description
+        """
         with torch.no_grad():
             outputs = self.model.forward(self.input_imgs)
             # texture flow
@@ -222,6 +253,12 @@ class ShapenetTester(test_utils.Tester):
             self.k2_to_k1 = self.map_kp_img1_to_img2_cam(self.kps[1], self.cams[1], self.cams[0], self.masks[0])
 
     def evaluate(self):
+        """
+        Evaluate the model
+
+        Args:
+            self: (todo): write your description
+        """
         bench_stats = {'kp_errs': [], 'kp_vis': []}
         for iteration, batch in tqdm(enumerate(zip(self.dl_img1, self.dl_img2))):
             # prepare inputs
@@ -324,6 +361,12 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green('PCK.1 %.3g, PCK.15 %.3g' % (pck1, pck15)))
 
     def get_current_visuals(self):
+        """
+        Returns a list of current visual
+
+        Args:
+            self: (todo): write your description
+        """
         outputs = {}
         outputs['gt_img'] = self.vis_img[2, :, :, :]
         outputs['source'] = self.vis_img[0, :, :, :]
@@ -331,6 +374,12 @@ class ShapenetTester(test_utils.Tester):
         return outputs
 
 def set_seed(seed):
+    """
+    Benchmark a random seed.
+
+    Args:
+        seed: (int): write your description
+    """
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     torch.manual_seed(seed)
@@ -339,6 +388,12 @@ def set_seed(seed):
     random.seed(seed)
 
 def main(_):
+    """
+    Main function.
+
+    Args:
+        _: (int): write your description
+    """
     set_seed(0)
     tester = ShapenetTester(opts)
     tester.init_testing()

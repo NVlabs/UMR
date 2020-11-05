@@ -44,11 +44,25 @@ flags.DEFINE_boolean('only_mean_sym', False, 'If true, only the meanshape is sym
 #----------------------------------#
 class ResNetConv(nn.Module):
     def __init__(self, n_blocks=4):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            n_blocks: (int): write your description
+        """
         super(ResNetConv, self).__init__()
         self.resnet = torchvision.models.resnet18(pretrained=True)
         self.n_blocks = n_blocks
 
     def forward(self, x):
+        """
+        Forward computation. forward.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         n_blocks = self.n_blocks
         x = self.resnet.conv1(x)
         x = self.resnet.bn1(x)
@@ -75,6 +89,17 @@ class Encoder(nn.Module):
     """
 
     def __init__(self, input_shape, n_blocks=4, nz_feat=100, batch_norm=True, z_dim=200):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            input_shape: (dict): write your description
+            n_blocks: (int): write your description
+            nz_feat: (int): write your description
+            batch_norm: (str): write your description
+            z_dim: (int): write your description
+        """
         super(Encoder, self).__init__()
         self.resnet_conv = ResNetConv(n_blocks=4)
         self.enc_conv1 = nb.conv2d(batch_norm, 512, 256, stride=2, kernel_size=4)
@@ -92,12 +117,27 @@ class Encoder(nn.Module):
         nb.net_init(self.enc_conv1)
 
     def sampling(self, mu, logvar):
+        """
+        Compute the logarithm of the gaussian distribution.
+
+        Args:
+            self: (todo): write your description
+            mu: (int): write your description
+            logvar: (todo): write your description
+        """
         var = logvar.mul(0.5).exp_()
         eps = torch.FloatTensor(var.size()).normal_()
         eps = eps.cuda()
         return eps.mul(var).add_(mu)
 
     def forward(self, img):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            img: (todo): write your description
+        """
         resnet_feat = self.resnet_conv(img)
 
         out_enc_conv1 = self.enc_conv1(resnet_feat)
@@ -115,6 +155,23 @@ class TexturePredictorUV(nn.Module):
     """
 
     def __init__(self, nz_feat, F, T, opts, img_H=64, img_W=128, n_upconv=5, nc_init=256, predict_flow=False, symmetric=False, num_sym_faces=624):
+        """
+        Initialize the flow
+
+        Args:
+            self: (todo): write your description
+            nz_feat: (int): write your description
+            F: (int): write your description
+            T: (int): write your description
+            opts: (todo): write your description
+            img_H: (int): write your description
+            img_W: (int): write your description
+            n_upconv: (todo): write your description
+            nc_init: (int): write your description
+            predict_flow: (callable): write your description
+            symmetric: (todo): write your description
+            num_sym_faces: (int): write your description
+        """
         super(TexturePredictorUV, self).__init__()
         self.feat_H = img_H // (2 ** n_upconv)
         self.feat_W = img_W // (2 ** n_upconv)
@@ -133,6 +190,14 @@ class TexturePredictorUV(nn.Module):
         self.decoder = nb.decoder2d(n_upconv, None, nc_init, init_fc=False, nc_final=nc_final, use_deconv=opts.use_deconv, upconv_mode=opts.upconv_mode)
 
     def forward(self, feat, uv_sampler):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            feat: (todo): write your description
+            uv_sampler: (todo): write your description
+        """
         # pdb.set_trace()
         bs = feat.size(0)
         uvimage_pred = self.enc(feat)
@@ -160,6 +225,14 @@ class ShapePredictor(nn.Module):
     """
 
     def __init__(self, nz_feat, num_verts):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            nz_feat: (int): write your description
+            num_verts: (int): write your description
+        """
         super(ShapePredictor, self).__init__()
         self.pred_layer = nn.Sequential(nn.Linear(nz_feat, nz_feat),
                                         nn.LeakyReLU(True),
@@ -173,6 +246,13 @@ class ShapePredictor(nn.Module):
                                         )
 
     def forward(self, feat):
+        """
+        Calculate forward computation.
+
+        Args:
+            self: (todo): write your description
+            feat: (todo): write your description
+        """
         delta_v = self.pred_layer(feat)
         # Make it B x num_verts x 3
         delta_v = delta_v.view(delta_v.size(0), -1, 3)
@@ -182,11 +262,27 @@ class ShapePredictor(nn.Module):
 
 class QuatPredictor(nn.Module):
     def __init__(self, nz_feat, nz_rot=4, classify_rot=False):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            nz_feat: (int): write your description
+            nz_rot: (todo): write your description
+            classify_rot: (todo): write your description
+        """
         super(QuatPredictor, self).__init__()
         self.pred_layer = nn.Linear(nz_feat, nz_rot)
         self.classify_rot = classify_rot
 
     def forward(self, feat):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            feat: (todo): write your description
+        """
         quat = self.pred_layer(feat)
         if self.classify_rot:
             quat = torch.nn.functional.log_softmax(quat)
@@ -197,10 +293,24 @@ class QuatPredictor(nn.Module):
 
 class ScalePredictor(nn.Module):
     def __init__(self, nz):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            nz: (int): write your description
+        """
         super(ScalePredictor, self).__init__()
         self.pred_layer = nn.Linear(nz, 1)
 
     def forward(self, feat):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            feat: (todo): write your description
+        """
         scale = self.pred_layer(feat) + 1  #biasing the scale to 1
         scale = torch.nn.functional.relu(scale) + 1e-12
         return scale
@@ -212,6 +322,14 @@ class TransPredictor(nn.Module):
     """
 
     def __init__(self, nz, orth=True):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            nz: (int): write your description
+            orth: (str): write your description
+        """
         super(TransPredictor, self).__init__()
         if orth:
             self.pred_layer = nn.Linear(nz, 2)
@@ -219,6 +337,13 @@ class TransPredictor(nn.Module):
             self.pred_layer = nn.Linear(nz, 3)
 
     def forward(self, feat):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            feat: (todo): write your description
+        """
         trans = self.pred_layer(feat)
         return trans
 
@@ -228,6 +353,17 @@ class TransPredictor(nn.Module):
 class MeshNet(nn.Module):
     def __init__(self, input_shape, opts, nz_feat = 100, axis = 0,
                  temp_dir = None):
+        """
+        Initialize the graph.
+
+        Args:
+            self: (todo): write your description
+            input_shape: (dict): write your description
+            opts: (todo): write your description
+            nz_feat: (int): write your description
+            axis: (int): write your description
+            temp_dir: (str): write your description
+        """
         # Input shape is H x W of the image.
         super(MeshNet, self).__init__()
         self.opts = opts
@@ -308,6 +444,13 @@ class MeshNet(nn.Module):
         self.register_buffer('noise', torch.zeros(int(self.batch_size/self.opts.gpu_num), self.z_dim))
 
     def forward(self, img=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            img: (todo): write your description
+        """
         outputs = {}
         # reconstruct path
         img_feat, noise, mean, logvar = self.encoder(img)
@@ -352,4 +495,10 @@ class MeshNet(nn.Module):
             return V
 
     def get_mean_shape(self):
+        """
+        Returns the mean shape of the distribution.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.symmetrize(self.mean_v)

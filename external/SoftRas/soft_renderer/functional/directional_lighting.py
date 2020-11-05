@@ -6,6 +6,16 @@ import numpy as np
 
 def directional_lighting(light, normals, light_intensity=0.5, light_color=(1,1,1), 
                          light_direction=(0,1,0)):
+    """
+    Return the direction direction of the direction.
+
+    Args:
+        light: (todo): write your description
+        normals: (todo): write your description
+        light_intensity: (str): write your description
+        light_color: (str): write your description
+        light_direction: (str): write your description
+    """
     # normals: [nb, :, 3]
 
     device = light.device

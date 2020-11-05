@@ -66,6 +66,19 @@ class BaseDataset(Dataset):
 
     def __init__(self, opts, filter_key=None, mirror=True, head_points_num=10,
                  belly_points_num=30, neck_points_num = 10, back_points_num = 30):
+        """
+        Initialize the jitter
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+            filter_key: (str): write your description
+            mirror: (str): write your description
+            head_points_num: (int): write your description
+            belly_points_num: (int): write your description
+            neck_points_num: (int): write your description
+            back_points_num: (int): write your description
+        """
         # Child class should define/load:
         # self.kp_perm
         # self.img_dir
@@ -86,6 +99,13 @@ class BaseDataset(Dataset):
         self.back_points_num = back_points_num
 
     def forward_img(self, index):
+        """
+        Forward image
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         data = self.anno[index]
         data_sfm = self.anno_sfm[index]
 
@@ -186,6 +206,16 @@ class BaseDataset(Dataset):
         return outputs
 
     def normalize_kp(self, kp, sfm_pose, img_h, img_w):
+        """
+        Normalize kp ( kp )
+
+        Args:
+            self: (todo): write your description
+            kp: (todo): write your description
+            sfm_pose: (bool): write your description
+            img_h: (todo): write your description
+            img_w: (todo): write your description
+        """
         vis = kp[:, 2, None] > 0
         new_kp = np.stack([2 * (kp[:, 0] / img_w) - 1,
                            2 * (kp[:, 1] / img_h) - 1,
@@ -198,6 +228,18 @@ class BaseDataset(Dataset):
         return new_kp, sfm_pose
 
     def crop_image(self, img, mask, bbox, kp, vis, sfm_pose):
+        """
+        Crop the image to the provided image.
+
+        Args:
+            self: (todo): write your description
+            img: (array): write your description
+            mask: (array): write your description
+            bbox: (tuple): write your description
+            kp: (todo): write your description
+            vis: (todo): write your description
+            sfm_pose: (todo): write your description
+        """
         # crop image and mask and translate kps
         img = image_utils.crop(img, bbox, bgval=1)
         mask = image_utils.crop(mask, bbox, bgval=0)
@@ -208,6 +250,17 @@ class BaseDataset(Dataset):
         return img, mask, kp, sfm_pose
 
     def scale_image(self, img, mask, kp, vis, sfm_pose):
+        """
+        Scale the image
+
+        Args:
+            self: (todo): write your description
+            img: (array): write your description
+            mask: (array): write your description
+            kp: (todo): write your description
+            vis: (todo): write your description
+            sfm_pose: (todo): write your description
+        """
         # Scale image so largest bbox size is img_size
         bwidth = np.shape(img)[0]
         bheight = np.shape(img)[1]
@@ -222,6 +275,17 @@ class BaseDataset(Dataset):
         return img_scale, mask_scale, kp, sfm_pose
 
     def mirror_image(self, img, mask, kp, sfm_pose, part_map = None):
+        """
+        Mirror image
+
+        Args:
+            self: (todo): write your description
+            img: (array): write your description
+            mask: (array): write your description
+            kp: (todo): write your description
+            sfm_pose: (bool): write your description
+            part_map: (str): write your description
+        """
         kp_perm = self.kp_perm
         if np.random.rand(1) > 0.5:
             # Need copy bc torch collate doesnt like neg strides
@@ -251,9 +315,22 @@ class BaseDataset(Dataset):
                 return img, mask, kp, sfm_pose, part_map
 
     def __len__(self):
+        """
+        Returns the number of images in the number.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.num_imgs
 
     def __getitem__(self, index):
+        """
+        Return index
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         outputs = self.forward_img(index)
         img = outputs['img']
         kp = outputs['kp']
@@ -309,6 +386,18 @@ class BaseDataset(Dataset):
 # ------------ Data Loader ----------- #
 # ------------------------------------ #
 def base_loader(d_set_func, batch_size, opts, filter_key=None, shuffle=True, mirror=True, ch=1):
+    """
+    Apply a function that load data store.
+
+    Args:
+        d_set_func: (todo): write your description
+        batch_size: (int): write your description
+        opts: (todo): write your description
+        filter_key: (str): write your description
+        shuffle: (bool): write your description
+        mirror: (todo): write your description
+        ch: (todo): write your description
+    """
     dset = d_set_func(opts, filter_key=filter_key, mirror=mirror, ch=ch)
     return DataLoader(
         dset,

@@ -5,6 +5,15 @@ import numpy as np
 
 class LaplacianLoss(nn.Module):
     def __init__(self, vertex, faces, average=False):
+        """
+        Initialize the face.
+
+        Args:
+            self: (todo): write your description
+            vertex: (str): write your description
+            faces: (todo): write your description
+            average: (str): write your description
+        """
         super(LaplacianLoss, self).__init__()
         self.nv = vertex.size(0)
         self.nf = faces.size(0)
@@ -27,6 +36,13 @@ class LaplacianLoss(nn.Module):
         self.register_buffer('laplacian', torch.from_numpy(laplacian))
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         batch_size = x.size(0)
         x = torch.matmul(self.laplacian, x)
         dims = tuple(range(x.ndimension())[1:])
@@ -38,6 +54,14 @@ class LaplacianLoss(nn.Module):
         
 class FlattenLoss(nn.Module):
     def __init__(self, faces, average=False):
+        """
+        Initialize the mesh
+
+        Args:
+            self: (todo): write your description
+            faces: (todo): write your description
+            average: (str): write your description
+        """
         super(FlattenLoss, self).__init__()
         self.nf = faces.size(0)
         self.average = average
@@ -70,6 +94,14 @@ class FlattenLoss(nn.Module):
         self.register_buffer('v3s', torch.from_numpy(v3s).long())
 
     def forward(self, vertices, eps=1e-6):
+        """
+        Find vertices in the vertices.
+
+        Args:
+            self: (todo): write your description
+            vertices: (array): write your description
+            eps: (float): write your description
+        """
         # make v0s, v1s, v2s, v3s
         batch_size = vertices.size(0)
 

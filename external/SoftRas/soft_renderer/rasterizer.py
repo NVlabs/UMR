@@ -13,6 +13,26 @@ class SoftRasterizer(nn.Module):
                  sigma_val=1e-5, dist_func='euclidean', dist_eps=1e-4,
                  gamma_val=1e-4, aggr_func_rgb='softmax', aggr_func_alpha='prod',
                  texture_type='surface'):
+        """
+        Initialize image.
+
+        Args:
+            self: (todo): write your description
+            image_size: (int): write your description
+            background_color: (bool): write your description
+            near: (int): write your description
+            far: (int): write your description
+            anti_aliasing: (str): write your description
+            fill_back: (str): write your description
+            eps: (float): write your description
+            sigma_val: (str): write your description
+            dist_func: (todo): write your description
+            dist_eps: (float): write your description
+            gamma_val: (float): write your description
+            aggr_func_rgb: (todo): write your description
+            aggr_func_alpha: (todo): write your description
+            texture_type: (str): write your description
+        """
         super(SoftRasterizer, self).__init__()
 
         if dist_func not in ['hard', 'euclidean', 'barycentric']:
@@ -40,6 +60,14 @@ class SoftRasterizer(nn.Module):
         self.texture_type = texture_type
 
     def forward(self, mesh, mode=None):
+        """
+        Forward image forward
+
+        Args:
+            self: (todo): write your description
+            mesh: (todo): write your description
+            mode: (str): write your description
+        """
         image_size = self.image_size * (2 if self.anti_aliasing else 1)
 
         images, p2f, aggr = srf.soft_rasterize(mesh.face_vertices, mesh.face_textures, image_size, 

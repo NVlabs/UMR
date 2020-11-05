@@ -83,6 +83,13 @@ flags.DEFINE_boolean('is_train', True, 'Are we training ?')
 #----------------------------------#
 class Trainer():
     def __init__(self, opts):
+        """
+        Initialize the device.
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+        """
         self.opts = opts
         self.gpu_id = opts.gpu_id
         torch.cuda.set_device(opts.gpu_id)
@@ -104,6 +111,16 @@ class Trainer():
 
     # helper saving function that can be used by subclasses
     def save_network(self, network, network_label, epoch_label, gpu_id=None):
+        """
+        Save a network todo.
+
+        Args:
+            self: (todo): write your description
+            network: (todo): write your description
+            network_label: (todo): write your description
+            epoch_label: (todo): write your description
+            gpu_id: (str): write your description
+        """
         save_filename = '{}_net_{}.pth'.format(network_label, epoch_label)
         save_path = os.path.join(self.save_dir, save_filename)
         if(self.opts.multi_gpu):
@@ -116,6 +133,16 @@ class Trainer():
 
     # helper loading function that can be used by subclasses
     def load_network(self, network, network_label, epoch_label, network_dir=None):
+        """
+        Load network from disk.
+
+        Args:
+            self: (todo): write your description
+            network: (todo): write your description
+            network_label: (str): write your description
+            epoch_label: (todo): write your description
+            network_dir: (str): write your description
+        """
         print('Loading model')
         save_filename = '{}_net_{}.pth'.format(network_label, epoch_label)
         if network_dir is None:
@@ -150,9 +177,21 @@ class Trainer():
         return
 
     def get_current_visuals(self):
+        """
+        Return a list of visual visual visual visual values
+
+        Args:
+            self: (todo): write your description
+        """
         return {}
 
     def get_current_scalars(self):
+        """
+        Returns the current scalars.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.sc_dict
 
     def register_scalars(self, sc_dict, beta=0.99):
@@ -167,9 +206,21 @@ class Trainer():
 
 
     def get_current_points(self):
+        """
+        Returns a list of the currently active points
+
+        Args:
+            self: (todo): write your description
+        """
         return {}
 
     def init_training(self):
+        """
+        Initialize the optimizer.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.iteration_num = 0
         self.init_dataset()
@@ -194,6 +245,12 @@ class Trainer():
             param_group['lr'] = self.opts.learning_rate / (1+self.iteration_num*5e-4)
 
     def train(self):
+        """
+        Training function.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.visualizer = TfVisualizer(opts)
         self.smoothed_total_loss = 0

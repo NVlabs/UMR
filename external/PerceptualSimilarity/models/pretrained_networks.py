@@ -5,6 +5,14 @@ from IPython import embed
 
 class squeezenet(torch.nn.Module):
     def __init__(self, requires_grad=False, pretrained=True):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+            requires_grad: (todo): write your description
+            pretrained: (bool): write your description
+        """
         super(squeezenet, self).__init__()
         pretrained_features = models.squeezenet1_1(pretrained=pretrained).features
         self.slice1 = torch.nn.Sequential()
@@ -34,6 +42,13 @@ class squeezenet(torch.nn.Module):
                 param.requires_grad = False
 
     def forward(self, X):
+        """
+        Forward computation. forward.
+
+        Args:
+            self: (todo): write your description
+            X: (todo): write your description
+        """
         h = self.slice1(X)
         h_relu1 = h
         h = self.slice2(h)
@@ -56,6 +71,15 @@ class squeezenet(torch.nn.Module):
 
 class alexnet(torch.nn.Module):
     def __init__(self, requires_grad=False, pretrained=False, dgx=False):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+            requires_grad: (todo): write your description
+            pretrained: (bool): write your description
+            dgx: (int): write your description
+        """
         super(alexnet, self).__init__()
         if(dgx):
             model = models.alexnet(pretrained=False)
@@ -85,6 +109,13 @@ class alexnet(torch.nn.Module):
                 param.requires_grad = False
 
     def forward(self, X):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            X: (todo): write your description
+        """
         h = self.slice1(X)
         h_relu1 = h
         h = self.slice2(h)
@@ -102,6 +133,14 @@ class alexnet(torch.nn.Module):
 
 class vgg16(torch.nn.Module):
     def __init__(self, requires_grad=False, pretrained=True):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+            requires_grad: (todo): write your description
+            pretrained: (bool): write your description
+        """
         super(vgg16, self).__init__()
         vgg_pretrained_features = models.vgg16(pretrained=pretrained).features
         self.slice1 = torch.nn.Sequential()
@@ -125,6 +164,13 @@ class vgg16(torch.nn.Module):
                 param.requires_grad = False
 
     def forward(self, X):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            X: (todo): write your description
+        """
         h = self.slice1(X)
         h_relu1_2 = h
         h = self.slice2(h)
@@ -144,6 +190,15 @@ class vgg16(torch.nn.Module):
 
 class resnet(torch.nn.Module):
     def __init__(self, requires_grad=False, pretrained=True, num=18):
+        """
+        Initialize network.
+
+        Args:
+            self: (todo): write your description
+            requires_grad: (todo): write your description
+            pretrained: (bool): write your description
+            num: (int): write your description
+        """
         super(resnet, self).__init__()
         if(num==18):
             self.net = models.resnet18(pretrained=pretrained)
@@ -167,6 +222,13 @@ class resnet(torch.nn.Module):
         self.layer4 = self.net.layer4
 
     def forward(self, X):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            X: (todo): write your description
+        """
         h = self.conv1(X)
         h = self.bn1(h)
         h = self.relu(h)

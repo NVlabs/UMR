@@ -56,6 +56,16 @@ class CUBDataset(base_data.BaseDataset):
     '''
 
     def __init__(self, opts, filter_key=None, mirror=True, ch=1):
+        """
+        Initialize annotations.
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+            filter_key: (str): write your description
+            mirror: (str): write your description
+            ch: (todo): write your description
+        """
         super(CUBDataset, self).__init__(opts, filter_key=filter_key)
         self.data_dir = opts.cub_dir
         self.data_cache_dir = opts.cub_cache_dir
@@ -84,18 +94,48 @@ class CUBDataset(base_data.BaseDataset):
 #----------- Data Loader ----------#
 #----------------------------------#
 def data_loader(opts, shuffle=True, mirror=True, ch=1):
+    """
+    Shuffle data loader.
+
+    Args:
+        opts: (todo): write your description
+        shuffle: (bool): write your description
+        mirror: (todo): write your description
+        ch: (todo): write your description
+    """
     return base_data.base_loader(CUBDataset, opts.batch_size, opts, filter_key=None,
                                  shuffle=shuffle, mirror=mirror,
                                  ch=ch)
 
 
 def kp_data_loader(batch_size, opts):
+    """
+    Returns kp dataset.
+
+    Args:
+        batch_size: (int): write your description
+        opts: (todo): write your description
+    """
     return base_data.base_loader(CUBDataset, batch_size, opts, filter_key='kp')
 
 
 def mask_data_loader(batch_size, opts):
+    """
+    Mask a dataset for a dataset.
+
+    Args:
+        batch_size: (int): write your description
+        opts: (todo): write your description
+    """
     return base_data.base_loader(CUBDataset, batch_size, opts, filter_key='mask')
 
 
 def sfm_data_loader(batch_size, opts):
+    """
+    Load cifo dataset.
+
+    Args:
+        batch_size: (int): write your description
+        opts: (todo): write your description
+    """
     return base_data.base_loader(CUBDataset, batch_size, opts, filter_key='sfm_pose')

@@ -45,6 +45,12 @@ opts = flags.FLAGS
 
 class ShapenetTester(test_utils.Tester):
     def define_model(self):
+        """
+        Define an image
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
 
         # define model
@@ -63,6 +69,12 @@ class ShapenetTester(test_utils.Tester):
         return
 
     def init_dataset(self):
+        """
+        Initialize the module.
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
         self.data_module = cub_data
         self.dataloader = self.data_module.data_loader(opts)
@@ -71,6 +83,12 @@ class ShapenetTester(test_utils.Tester):
             std=[0.229, 0.224, 0.225])
 
     def evaluate(self):
+        """
+        Evaluate the model
+
+        Args:
+            self: (todo): write your description
+        """
         mask_iou = 0
         ious = []
         for i, batch in tqdm(enumerate(self.dataloader)):
@@ -115,6 +133,12 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green("Average mask IoU: {:.4f}.".format(iou_concat.mean())))
 
 def set_seed(seed):
+    """
+    Benchmark a random seed.
+
+    Args:
+        seed: (int): write your description
+    """
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     torch.manual_seed(seed)
@@ -123,6 +147,12 @@ def set_seed(seed):
     random.seed(seed)
 
 def main(_):
+    """
+    Main function.
+
+    Args:
+        _: (int): write your description
+    """
     set_seed(0)
     tester = ShapenetTester(opts)
     tester.init_testing()

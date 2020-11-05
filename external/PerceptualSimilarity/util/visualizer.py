@@ -9,6 +9,15 @@ import math
 # from IPython import embed
 
 def zoom_to_res(img,res=256,order=0,axis=0):
+    """
+    Zoom image to zoom
+
+    Args:
+        img: (array): write your description
+        res: (todo): write your description
+        order: (int): write your description
+        axis: (int): write your description
+    """
     # img   3xXxX
     from scipy.ndimage import zoom
     zoom_factor = res/img.shape[1]
@@ -19,6 +28,13 @@ def zoom_to_res(img,res=256,order=0,axis=0):
 
 class Visualizer():
     def __init__(self, opt):
+        """
+        Initialize the display
+
+        Args:
+            self: (todo): write your description
+            opt: (dict): write your description
+        """
         # self.opt = opt
         self.display_id = opt.display_id
         # self.use_html = opt.is_train and not opt.no_html
@@ -41,6 +57,16 @@ class Visualizer():
 
     # |visuals|: dictionary of images to display or save
     def display_current_results(self, visuals, epoch, nrows=None, res=256):
+        """
+        Displays the results of the display.
+
+        Args:
+            self: (todo): write your description
+            visuals: (dict): write your description
+            epoch: (todo): write your description
+            nrows: (todo): write your description
+            res: (todo): write your description
+        """
         if self.display_id > 0: # show images in the browser
             title = self.name
             if(nrows is None):
@@ -92,6 +118,19 @@ class Visualizer():
 
     # save errors into a directory
     def plot_current_errors_save(self, epoch, counter_ratio, opt, errors,keys='+ALL',name='loss', to_plot=False):
+        """
+        Plots error results
+
+        Args:
+            self: (todo): write your description
+            epoch: (int): write your description
+            counter_ratio: (str): write your description
+            opt: (todo): write your description
+            errors: (todo): write your description
+            keys: (list): write your description
+            name: (str): write your description
+            to_plot: (bool): write your description
+        """
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X':[],'Y':[], 'legend':list(errors.keys())}
         self.plot_data['X'].append(epoch + counter_ratio)
@@ -124,6 +163,16 @@ class Visualizer():
 
     # errors: dictionary of error labels and values
     def plot_current_errors(self, epoch, counter_ratio, opt, errors):
+        """
+        Plots the error errors
+
+        Args:
+            self: (todo): write your description
+            epoch: (todo): write your description
+            counter_ratio: (str): write your description
+            opt: (todo): write your description
+            errors: (todo): write your description
+        """
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X':[],'Y':[], 'legend':list(errors.keys())}
         self.plot_data['X'].append(epoch + counter_ratio)
@@ -140,6 +189,19 @@ class Visualizer():
 
     # errors: same format as |errors| of plotCurrentErrors
     def print_current_errors(self, epoch, i, errors, t, t2=-1, t2o=-1, fid=None):
+        """
+        Print the error message.
+
+        Args:
+            self: (todo): write your description
+            epoch: (todo): write your description
+            i: (todo): write your description
+            errors: (dict): write your description
+            t: (todo): write your description
+            t2: (todo): write your description
+            t2o: (todo): write your description
+            fid: (todo): write your description
+        """
         message = '(ep: %d, it: %d, t: %.3f[s], ept: %.2f/%.2f[h]) ' % (epoch, i, t, t2o, t2)
         message += (', ').join(['%s: %.3f' % (k, v) for k, v in errors.items()])
 
@@ -150,6 +212,18 @@ class Visualizer():
 
     # save image to the disk
     def save_images_simple(self, webpage, images, names, in_txts, prefix='', res=256):
+        """
+        Save images to disk.
+
+        Args:
+            self: (todo): write your description
+            webpage: (todo): write your description
+            images: (array): write your description
+            names: (str): write your description
+            in_txts: (int): write your description
+            prefix: (str): write your description
+            res: (todo): write your description
+        """
         image_dir = webpage.get_image_dir()
         ims = []
         txts = []
@@ -172,6 +246,17 @@ class Visualizer():
 
     # save image to the disk
     def save_images(self, webpage, images, names, image_path, title=''):
+        """
+        Saves images to disk.
+
+        Args:
+            self: (todo): write your description
+            webpage: (todo): write your description
+            images: (array): write your description
+            names: (str): write your description
+            image_path: (str): write your description
+            title: (str): write your description
+        """
         image_dir = webpage.get_image_dir()
         # short_path = ntpath.basename(image_path)
         # name = os.path.splitext(short_path)[0]
