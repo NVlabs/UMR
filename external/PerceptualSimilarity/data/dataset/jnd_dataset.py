@@ -9,6 +9,14 @@ from IPython import embed
 
 class JNDDataset(BaseDataset):
     def initialize(self, dataroot, load_size=64):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+            dataroot: (array): write your description
+            load_size: (int): write your description
+        """
         self.root = dataroot
         self.load_size = load_size
 
@@ -33,6 +41,13 @@ class JNDDataset(BaseDataset):
         self.same_paths = sorted(self.same_paths)
 
     def __getitem__(self, index):
+        """
+        Returns the index
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         p0_path = self.p0_paths[index]
         p0_img_ = Image.open(p0_path).convert('RGB')
         p0_img = self.transform(p0_img_)
@@ -50,4 +65,10 @@ class JNDDataset(BaseDataset):
             'p0_path': p0_path, 'p1_path': p1_path, 'same_path': same_path}
 
     def __len__(self):
+        """
+        Returns the number of paths.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.p0_paths)

@@ -20,6 +20,34 @@ class Renderer(nn.Module):
                  light_intensity_ambient=0.5, light_color_ambient=[1,1,1],
                  light_intensity_directionals=0.5, light_color_directionals=[1,1,1],
                  light_directions=[0,1,0]):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            image_size: (int): write your description
+            background_color: (bool): write your description
+            near: (int): write your description
+            far: (int): write your description
+            anti_aliasing: (str): write your description
+            fill_back: (str): write your description
+            eps: (float): write your description
+            camera_mode: (str): write your description
+            P: (int): write your description
+            dist_coeffs: (str): write your description
+            orig_size: (int): write your description
+            perspective: (todo): write your description
+            viewing_angle: (todo): write your description
+            viewing_scale: (todo): write your description
+            eye: (str): write your description
+            camera_direction: (str): write your description
+            light_mode: (str): write your description
+            light_intensity_ambient: (str): write your description
+            light_color_ambient: (todo): write your description
+            light_intensity_directionals: (str): write your description
+            light_color_directionals: (str): write your description
+            light_directions: (str): write your description
+        """
         super(Renderer, self).__init__()
 
         # light
@@ -39,6 +67,14 @@ class Renderer(nn.Module):
                                         anti_aliasing, fill_back, eps)
 
     def forward(self, mesh, mode=None):
+        """
+        Raster
+
+        Args:
+            self: (todo): write your description
+            mesh: (todo): write your description
+            mode: (str): write your description
+        """
         mesh = self.lighting(mesh)
         mesh = self.transform(mesh)
         return self.rasterizer(mesh, mode)
@@ -58,6 +94,41 @@ class SoftRenderer(nn.Module):
                  light_intensity_ambient=0.5, light_color_ambient=[1,1,1],
                  light_intensity_directionals=0.5, light_color_directionals=[1,1,1],
                  light_directions=[0,1,0]):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            image_size: (int): write your description
+            background_color: (bool): write your description
+            near: (int): write your description
+            far: (int): write your description
+            anti_aliasing: (str): write your description
+            fill_back: (str): write your description
+            eps: (float): write your description
+            sigma_val: (str): write your description
+            dist_func: (todo): write your description
+            dist_eps: (float): write your description
+            gamma_val: (float): write your description
+            aggr_func_rgb: (todo): write your description
+            aggr_func_alpha: (todo): write your description
+            texture_type: (str): write your description
+            camera_mode: (str): write your description
+            P: (int): write your description
+            dist_coeffs: (str): write your description
+            orig_size: (int): write your description
+            perspective: (todo): write your description
+            viewing_angle: (todo): write your description
+            viewing_scale: (todo): write your description
+            eye: (str): write your description
+            camera_direction: (str): write your description
+            light_mode: (str): write your description
+            light_intensity_ambient: (str): write your description
+            light_color_ambient: (todo): write your description
+            light_intensity_directionals: (str): write your description
+            light_color_directionals: (str): write your description
+            light_directions: (str): write your description
+        """
         super(SoftRenderer, self).__init__()
 
         # light
@@ -80,23 +151,63 @@ class SoftRenderer(nn.Module):
                                             texture_type)
 
     def set_sigma(self, sigma):
+        """
+        Set sigma
+
+        Args:
+            self: (todo): write your description
+            sigma: (float): write your description
+        """
         self.rasterizer.sigma_val = sigma
 
     def set_gamma(self, gamma):
+        """
+        Set gamma gamma function.
+
+        Args:
+            self: (todo): write your description
+            gamma: (todo): write your description
+        """
         self.rasterizer.gamma_val = gamma
 
     def set_texture_mode(self, mode):
+        """
+        Set the texture mode.
+
+        Args:
+            self: (todo): write your description
+            mode: (str): write your description
+        """
         assert mode in ['vertex', 'surface'], 'Mode only support surface and vertex'
 
         self.lighting.light_mode = mode
         self.rasterizer.texture_type = mode
 
     def render_mesh(self, mesh, mode=None):
+        """
+        Render a mesh as a : class : raster.
+
+        Args:
+            self: (todo): write your description
+            mesh: (todo): write your description
+            mode: (str): write your description
+        """
         self.set_texture_mode(mesh.texture_type)
         mesh = self.lighting(mesh)
         mesh = self.transform(mesh)
         return self.rasterizer(mesh, mode)
 
     def forward(self, vertices, faces, textures=None, mode=None, texture_type='surface'):
+        """
+        Render a list of the vertices.
+
+        Args:
+            self: (todo): write your description
+            vertices: (array): write your description
+            faces: (todo): write your description
+            textures: (todo): write your description
+            mode: (str): write your description
+            texture_type: (str): write your description
+        """
         mesh = sr.Mesh(vertices, faces, textures=textures, texture_type=texture_type)
         return self.render_mesh(mesh, mode)

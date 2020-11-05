@@ -15,10 +15,21 @@ import cv2
 from datetime import datetime
 
 def datetime_str():
+    """
+    Return a string representing a datetime.
+
+    Args:
+    """
     now = datetime.now()
     return '%04d-%02d-%02d-%02d-%02d-%02d'%(now.year,now.month,now.day,now.hour,now.minute,now.second)
 
 def read_text_file(in_path):
+    """
+    Read text file.
+
+    Args:
+        in_path: (str): write your description
+    """
     fid = open(in_path,'r')
 
     vals = []
@@ -31,26 +42,74 @@ def read_text_file(in_path):
     return np.array(vals)
 
 def bootstrap(in_vec,num_samples=100,bootfunc=np.mean):
+    """
+    R bootstrap bootstrapping.
+
+    Args:
+        in_vec: (int): write your description
+        num_samples: (int): write your description
+        bootfunc: (todo): write your description
+        np: (todo): write your description
+        mean: (todo): write your description
+    """
     from astropy import stats
     return stats.bootstrap(np.array(in_vec),bootnum=num_samples,bootfunc=bootfunc)
 
 def rand_flip(input1,input2):
+    """
+    Flip two input vectors.
+
+    Args:
+        input1: (array): write your description
+        input2: (array): write your description
+    """
     if(np.random.binomial(1,.5)==1):
         return (input1,input2)
     else:
         return (input2,input1)
 
 def l2(p0, p1, range=255.):
+    """
+    Calculate the l2 of - 1 )
+
+    Args:
+        p0: (int): write your description
+        p1: (int): write your description
+        range: (todo): write your description
+    """
     return .5*np.mean((p0 / range - p1 / range)**2)
 
 def psnr(p0, p1, peak=255.):
+    """
+    Calculate p0.
+
+    Args:
+        p0: (array): write your description
+        p1: (array): write your description
+        peak: (array): write your description
+    """
     return 10*np.log10(peak**2/np.mean((1.*p0-1.*p1)**2))
 
 def dssim(p0, p1, range=255.):
+    """
+    Compute the p0 ( p0 ( p0.
+
+    Args:
+        p0: (array): write your description
+        p1: (array): write your description
+        range: (todo): write your description
+    """
     # embed()
     return (1 - compare_ssim(p0, p1, data_range=range, multichannel=True)) / 2.
 
 def rgb2lab(in_img,mean_cent=False):
+    """
+    Convert an rgb image to rgb.
+
+    Args:
+        in_img: (int): write your description
+        mean_cent: (int): write your description
+    """
     from skimage import color
     img_lab = color.rgb2lab(in_img)
     if(mean_cent):
@@ -58,10 +117,24 @@ def rgb2lab(in_img,mean_cent=False):
     return img_lab
 
 def normalize_blob(in_feat,eps=1e-10):
+    """
+    Normalize the distribution.
+
+    Args:
+        in_feat: (int): write your description
+        eps: (float): write your description
+    """
     norm_factor = np.sqrt(np.sum(in_feat**2,axis=1,keepdims=True))
     return in_feat/(norm_factor+eps)
 
 def cos_sim_blob(in0,in1):
+    """
+    R compute cosine cosine cosine.
+
+    Args:
+        in0: (array): write your description
+        in1: (todo): write your description
+    """
     in0_norm = normalize_blob(in0)
     in1_norm = normalize_blob(in1)
     (N,C,X,Y) = in0_norm.shape
@@ -69,11 +142,25 @@ def cos_sim_blob(in0,in1):
     return np.mean(np.mean(np.sum(in0_norm*in1_norm,axis=1),axis=1),axis=1)
 
 def normalize_tensor(in_feat,eps=1e-10):
+    """
+    Normalize the tensor.
+
+    Args:
+        in_feat: (todo): write your description
+        eps: (float): write your description
+    """
     # norm_factor = torch.sqrt(torch.sum(in_feat**2,dim=1)).view(in_feat.size()[0],1,in_feat.size()[2],in_feat.size()[3]).repeat(1,in_feat.size()[1],1,1)
     norm_factor = torch.sqrt(torch.sum(in_feat**2,dim=1)).view(in_feat.size()[0],1,in_feat.size()[2],in_feat.size()[3])
     return in_feat/(norm_factor.expand_as(in_feat)+eps)
 
 def cos_sim(in0,in1):
+    """
+    Simulate cosine cosine cosine.
+
+    Args:
+        in0: (todo): write your description
+        in1: (todo): write your description
+    """
     in0_norm = normalize_tensor(in0)
     in1_norm = normalize_tensor(in1)
     N = in0.size()[0]
@@ -86,14 +173,34 @@ def cos_sim(in0,in1):
 # |imtype|: the desired type of the conve
 
 def tensor2np(tensor_obj):
+    """
+    Convert tensor.
+
+    Args:
+        tensor_obj: (todo): write your description
+    """
     # change dimension of a tensor object into a numpy array
     return tensor_obj[0].cpu().float().numpy().transpose((1,2,0))
 
 def np2tensor(np_obj):
+    """
+    Convert tensor to tensor.
+
+    Args:
+        np_obj: (todo): write your description
+    """
      # change dimenion of np array into tensor array
     return torch.Tensor(np_obj[:, :, :, np.newaxis].transpose((3, 2, 0, 1)))
 
 def tensor2tensorlab(image_tensor,to_norm=True,mc_only=False):
+    """
+    Convert tensor to rgb tensor.
+
+    Args:
+        image_tensor: (todo): write your description
+        to_norm: (todo): write your description
+        mc_only: (bool): write your description
+    """
     # image tensor to lab tensor
     from skimage import color
 
@@ -110,6 +217,13 @@ def tensor2tensorlab(image_tensor,to_norm=True,mc_only=False):
     return np2tensor(img_lab)
 
 def tensorlab2tensor(lab_tensor,return_inbnd=False):
+    """
+    Convert a tensor.
+
+    Args:
+        lab_tensor: (todo): write your description
+        return_inbnd: (bool): write your description
+    """
     from skimage import color
     import warnings
     warnings.filterwarnings("ignore")
@@ -133,20 +247,55 @@ def tensorlab2tensor(lab_tensor,return_inbnd=False):
         return im2tensor(rgb_back)
 
 def tensor2im(image_tensor, imtype=np.uint8, cent=1., factor=255./2.):
+    """
+    Convert an image to a 2d array.
+
+    Args:
+        image_tensor: (todo): write your description
+        imtype: (str): write your description
+        np: (todo): write your description
+        uint8: (todo): write your description
+        cent: (todo): write your description
+        factor: (float): write your description
+    """
 # def tensor2im(image_tensor, imtype=np.uint8, cent=1., factor=1.):
     image_numpy = image_tensor[0].cpu().float().numpy()
     image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + cent) * factor
     return image_numpy.astype(imtype)
 
 def im2tensor(image, imtype=np.uint8, cent=1., factor=255./2.):
+    """
+    Convert an image to a 2d image
+
+    Args:
+        image: (array): write your description
+        imtype: (str): write your description
+        np: (todo): write your description
+        uint8: (todo): write your description
+        cent: (todo): write your description
+        factor: (float): write your description
+    """
 # def im2tensor(image, imtype=np.uint8, cent=1., factor=1.):
     return torch.Tensor((image / factor - cent)
                         [:, :, :, np.newaxis].transpose((3, 2, 0, 1)))
 
 def tensor2vec(vector_tensor):
+    """
+    Convert vector_tensor into a vector.
+
+    Args:
+        vector_tensor: (todo): write your description
+    """
     return vector_tensor.data.cpu().numpy()[:, :, 0, 0]
 
 def diagnose_network(net, name='network'):
+    """
+    Calculate mean of a network.
+
+    Args:
+        net: (todo): write your description
+        name: (str): write your description
+    """
     mean = 0.0
     count = 0
     for param in net.parameters():
@@ -159,9 +308,24 @@ def diagnose_network(net, name='network'):
     print(mean)
 
 def grab_patch(img_in, P, yy, xx):
+    """
+    Grab p = p
+
+    Args:
+        img_in: (todo): write your description
+        P: (todo): write your description
+        yy: (todo): write your description
+        xx: (todo): write your description
+    """
     return img_in[yy:yy+P,xx:xx+P,:]
 
 def load_image(path):
+    """
+    Load an image.
+
+    Args:
+        path: (str): write your description
+    """
     if(path[-3:] == 'dng'):
         import rawpy
         with rawpy.imread(path) as raw:
@@ -177,6 +341,13 @@ def load_image(path):
 
 
 def resize_image(img, max_size=256):
+    """
+    Resize an image
+
+    Args:
+        img: (array): write your description
+        max_size: (int): write your description
+    """
     [Y, X] = img.shape[:2]
 
     # resize
@@ -187,17 +358,39 @@ def resize_image(img, max_size=256):
     return img
 
 def resize_image_zoom(img, zoom_factor=1., order=3):
+    """
+    Resize an image by a factor.
+
+    Args:
+        img: (array): write your description
+        zoom_factor: (todo): write your description
+        order: (int): write your description
+    """
     if(zoom_factor==1):
         return img
     else:
         return zoom(img, [zoom_factor, zoom_factor, 1], order=order)
 
 def save_image(image_numpy, image_path, ):
+    """
+    Save an image as numpy.
+
+    Args:
+        image_numpy: (int): write your description
+        image_path: (str): write your description
+    """
     image_pil = Image.fromarray(image_numpy)
     image_pil.save(image_path)
 
 
 def prep_display_image(img, dtype='uint8'):
+    """
+    Prepare an image for display.
+
+    Args:
+        img: (array): write your description
+        dtype: (todo): write your description
+    """
     if(dtype == 'uint8'):
         return np.clip(img, 0, 255).astype('uint8')
     else:
@@ -221,6 +414,12 @@ def info(object, spacing=10, collapse=1):
 
 
 def varname(p):
+    """
+    Return the name of the frame
+
+    Args:
+        p: (array): write your description
+    """
     for line in inspect.getframeinfo(inspect.currentframe().f_back)[3]:
         m = re.search(r'\bvarname\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)', line)
         if m:
@@ -228,6 +427,14 @@ def varname(p):
 
 
 def print_numpy(x, val=True, shp=False):
+    """
+    Print numpy array
+
+    Args:
+        x: (array): write your description
+        val: (int): write your description
+        shp: (bool): write your description
+    """
     x = x.astype(np.float64)
     if shp:
         print('shape,', x.shape)
@@ -239,6 +446,12 @@ def print_numpy(x, val=True, shp=False):
 
 
 def mkdirs(paths):
+    """
+    Recursively create directories.
+
+    Args:
+        paths: (str): write your description
+    """
     if isinstance(paths, list) and not isinstance(paths, str):
         for path in paths:
             mkdir(path)
@@ -247,11 +460,23 @@ def mkdirs(paths):
 
 
 def mkdir(path):
+    """
+    Create a directory if it doesn t exist.
+
+    Args:
+        path: (str): write your description
+    """
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def rgb2lab(input):
+    """
+    Convert an rgb color to rgb
+
+    Args:
+        input: (array): write your description
+    """
     from skimage import color
     return color.rgb2lab(input / 255.)
 
@@ -272,6 +497,23 @@ def montage(
             (0,
              0,
              0))):
+    """
+    Auxiliary method that image
+
+    Args:
+        imgs: (array): write your description
+        PAD: (int): write your description
+        RATIO: (str): write your description
+        EXTRA_PAD: (int): write your description
+        MM: (array): write your description
+        NN: (array): write your description
+        primeDir: (str): write your description
+        verbose: (bool): write your description
+        returnGridPos: (bool): write your description
+        backClr: (array): write your description
+        np: (todo): write your description
+        array: (array): write your description
+    """
     # INPUTS
     #   imgs        YxXxMxN or YxXxN
     #   PAD         scalar              number of pixels in between
@@ -367,15 +609,35 @@ def montage(
 
 class zeroClipper(object):
     def __init__(self, frequency=1):
+        """
+        Initialize the frequency.
+
+        Args:
+            self: (todo): write your description
+            frequency: (float): write your description
+        """
         self.frequency = frequency
 
     def __call__(self, module):
+        """
+        Call module.
+
+        Args:
+            self: (todo): write your description
+            module: (todo): write your description
+        """
         embed()
         if hasattr(module, 'weight'):
             # module.weight.data = torch.max(module.weight.data, 0)
             module.weight.data = torch.max(module.weight.data, 0) + 100
 
 def flatten_nested_list(nested_list):
+    """
+    Flatten nested list of nested lists.
+
+    Args:
+        nested_list: (list): write your description
+    """
     # only works for list of list
     accum = []
     for sublist in nested_list:
@@ -384,6 +646,13 @@ def flatten_nested_list(nested_list):
     return accum
 
 def read_file(in_path,list_lines=False):
+    """
+    Read a file : param in_file_lines : param ini file
+
+    Args:
+        in_path: (str): write your description
+        list_lines: (list): write your description
+    """
     agg_str = ''
     f = open(in_path,'r')
     cur_line = f.readline()
@@ -402,6 +671,12 @@ def read_file(in_path,list_lines=False):
         return ret_list
 
 def read_csv_file_as_text(in_path):
+    """
+    Read csv file as csv ascii file.
+
+    Args:
+        in_path: (str): write your description
+    """
     agg_str = []
     f = open(in_path,'r')
     cur_line = f.readline()
@@ -412,6 +687,13 @@ def read_csv_file_as_text(in_path):
     return agg_str
 
 def random_swap(obj0,obj1):
+    """
+    Swap random object.
+
+    Args:
+        obj0: (todo): write your description
+        obj1: (todo): write your description
+    """
     if(np.random.rand() < .5):
         return (obj0,obj1,0)
     else:

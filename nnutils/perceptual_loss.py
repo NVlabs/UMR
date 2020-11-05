@@ -37,6 +37,15 @@ from ..external.PerceptualSimilarity.models import dist_model
 
 class PerceptualLoss(object):
     def __init__(self, model='net', net='alex', use_gpu=True):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            net: (todo): write your description
+            use_gpu: (bool): write your description
+        """
         print('Setting up Perceptual loss..')
         self.model = dist_model.DistModel()
         self.model.initialize(model=model, net=net, use_gpu=True)

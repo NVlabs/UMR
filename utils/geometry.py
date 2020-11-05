@@ -61,6 +61,14 @@ def triangle_direction_intersection(tri, trg):
 
 
 def project_verts_on_mesh(verts, mesh_verts, mesh_faces):
+    """
+    Return a 2d mesh on a mesh.
+
+    Args:
+        verts: (str): write your description
+        mesh_verts: (str): write your description
+        mesh_faces: (list): write your description
+    """
     verts_out = np.copy(verts)
     for nv in range(verts.shape[0]):
         max_norm = 0

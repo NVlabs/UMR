@@ -44,6 +44,13 @@ flags.DEFINE_string('cub_cache_dir', 'unsup-mesh/cachedir/cub/' , 'CUB Data Dire
 class CubDataset(base_data.BaseDataset):
 
     def __init__(self, opts):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+        """
         super(CubDataset, self).__init__(opts,)
         self.data_dir = opts.cub_dir
         self.data_cache_dir = opts.cub_cache_dir
@@ -78,6 +85,14 @@ class CubDataset(base_data.BaseDataset):
 class CubTestDataset(Dataset):
 
     def __init__(self, opts, filter_key):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+            filter_key: (str): write your description
+        """
         self.filter_key = filter_key
         sdset = CubDataset(opts)
         count = opts.number_pairs
@@ -88,10 +103,23 @@ class CubTestDataset(Dataset):
         self.tuples = list(pairs)
 
     def __len__(self,):
+        """
+        Returns the length of the sequence.
+
+        Args:
+            self: (todo): write your description
+        """
         tuples = copy.deepcopy(self.tuples)
         return len(tuples)
 
     def __getitem__(self, index):
+        """
+        Return the item from set
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         i1, i2 = self.tuples[index]
         b1 = self.sdset[i1]
         b2 = self.sdset[i2]
@@ -104,6 +132,13 @@ class CubTestDataset(Dataset):
 
 
 def cub_dataloader(opts, shuffle=True):
+    """
+    Cubdataler.
+
+    Args:
+        opts: (todo): write your description
+        shuffle: (bool): write your description
+    """
     dset = CubDataset(opts)
     return DataLoader(
         dset,
@@ -114,6 +149,14 @@ def cub_dataloader(opts, shuffle=True):
 
 
 def cub_test_pair_dataloader(opts, filter_key, shuffle=False):
+    """
+    Determine cub test test test.
+
+    Args:
+        opts: (todo): write your description
+        filter_key: (str): write your description
+        shuffle: (bool): write your description
+    """
     dset = CubTestDataset(opts, filter_key)
     return DataLoader(
         dset,
@@ -124,18 +167,45 @@ def cub_test_pair_dataloader(opts, filter_key, shuffle=False):
 
 
 def cub_dataset(opts):
+    """
+    The cubdataset.
+
+    Args:
+        opts: (todo): write your description
+    """
     dset = CubDataset(opts)
 
     class DataIter():
         def __init__(self, dset, collate_fn):
+            """
+            Initialize the dset.
+
+            Args:
+                self: (todo): write your description
+                dset: (todo): write your description
+                collate_fn: (todo): write your description
+            """
             self.collate_fn = collate_fn
             self.dset = dset
             return
 
         def __len__(self,):
+            """
+            Returns the length of the dset.
+
+            Args:
+                self: (todo): write your description
+            """
             return len(self.dset)
 
         def __getitem__(self, index):
+            """
+            Get an item from the given index.
+
+            Args:
+                self: (todo): write your description
+                index: (int): write your description
+            """
             example = dset[index]
             return self.collate_fn([example])
 

@@ -5,6 +5,14 @@ import numpy as np
 
 
 def ambient_lighting(light, light_intensity=0.5, light_color=(1,1,1)):
+    """
+    Ambient light.
+
+    Args:
+        light: (todo): write your description
+        light_intensity: (str): write your description
+        light_color: (str): write your description
+    """
     device = light.device
 
     if isinstance(light_color, tuple) or isinstance(light_color, list):

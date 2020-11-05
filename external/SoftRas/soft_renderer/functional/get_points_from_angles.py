@@ -3,6 +3,15 @@ import math
 import torch
 
 def get_points_from_angles(distance, elevation, azimuth, degrees=True):
+    """
+    Calculate the azimuth of ).
+
+    Args:
+        distance: (todo): write your description
+        elevation: (str): write your description
+        azimuth: (str): write your description
+        degrees: (str): write your description
+    """
     if isinstance(distance, float) or isinstance(distance, int):
         if degrees:
             elevation = math.radians(elevation)

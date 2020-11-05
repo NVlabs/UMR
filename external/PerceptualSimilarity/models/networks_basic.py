@@ -13,6 +13,16 @@ from . import pretrained_networks as pn
 class PNet(nn.Module):
     '''Pre-trained network with all channels equally weighted by default'''
     def __init__(self, pnet_type='vgg', pnet_rand=False, use_gpu=True, dgx=False):
+        """
+        Initialize network interface.
+
+        Args:
+            self: (todo): write your description
+            pnet_type: (str): write your description
+            pnet_rand: (float): write your description
+            use_gpu: (bool): write your description
+            dgx: (int): write your description
+        """
         super(PNet, self).__init__()
 
         self.use_gpu = use_gpu
@@ -40,6 +50,15 @@ class PNet(nn.Module):
         #    self.scale = self.scale.cuda()
 
     def forward(self, in0, in1, retPerLayer=False):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            in0: (todo): write your description
+            in1: (todo): write your description
+            retPerLayer: (bool): write your description
+        """
         in0_sc = (in0 - self.shift.expand_as(in0))/self.scale.expand_as(in0)
         in1_sc = (in1 - self.shift.expand_as(in0))/self.scale.expand_as(in0)
 
@@ -66,6 +85,17 @@ class PNet(nn.Module):
 # Learned perceptual metric
 class PNetLin(nn.Module):
     def __init__(self, pnet_type='vgg', pnet_tune=False, use_dropout=False, use_gpu=True, spatial=True):
+        """
+        Initialize network interface
+
+        Args:
+            self: (todo): write your description
+            pnet_type: (str): write your description
+            pnet_tune: (todo): write your description
+            use_dropout: (bool): write your description
+            use_gpu: (bool): write your description
+            spatial: (str): write your description
+        """
         super(PNetLin, self).__init__()
 
         self.use_gpu = use_gpu
@@ -119,6 +149,14 @@ class PNetLin(nn.Module):
                 self.lin6.cuda()
 
     def forward(self, in0, in1):
+        """
+        Forward computation
+
+        Args:
+            self: (todo): write your description
+            in0: (todo): write your description
+            in1: (todo): write your description
+        """
         in0_sc = (in0 - self.shift.expand_as(in0))/self.scale.expand_as(in0)
         in1_sc = (in1 - self.shift.expand_as(in0))/self.scale.expand_as(in0)
 
@@ -161,6 +199,14 @@ class PNetLin(nn.Module):
 class Dist2LogitLayer(nn.Module):
     ''' takes 2 distances, puts through fc layers, spits out value between [0,1] (if use_sigmoid is True) '''
     def __init__(self, chn_mid=32,use_sigmoid=True):
+        """
+        Initialize the model.
+
+        Args:
+            self: (todo): write your description
+            chn_mid: (int): write your description
+            use_sigmoid: (bool): write your description
+        """
         super(Dist2LogitLayer, self).__init__()
         layers = [nn.Conv2d(5, chn_mid, 1, stride=1, padding=0, bias=True),]
         layers += [nn.LeakyReLU(0.2,True),]
@@ -172,10 +218,27 @@ class Dist2LogitLayer(nn.Module):
         self.model = nn.Sequential(*layers)
 
     def forward(self,d0,d1,eps=0.1):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            d0: (todo): write your description
+            d1: (todo): write your description
+            eps: (float): write your description
+        """
         return self.model.forward(torch.cat((d0,d1,d0-d1,d0/(d1+eps),d1/(d0+eps)),dim=1))
 
 class BCERankingLoss(nn.Module):
     def __init__(self, use_gpu=True, chn_mid=32):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            use_gpu: (bool): write your description
+            chn_mid: (int): write your description
+        """
         super(BCERankingLoss, self).__init__()
         self.use_gpu = use_gpu
         self.net = Dist2LogitLayer(chn_mid=chn_mid)
@@ -187,6 +250,15 @@ class BCERankingLoss(nn.Module):
             self.net.cuda()
 
     def forward(self, d0, d1, judge):
+        """
+        Perform loss.
+
+        Args:
+            self: (todo): write your description
+            d0: (todo): write your description
+            d1: (todo): write your description
+            judge: (todo): write your description
+        """
         per = (judge+1.)/2.
         if(self.use_gpu):
             per = per.cuda()
@@ -196,6 +268,15 @@ class BCERankingLoss(nn.Module):
 class NetLinLayer(nn.Module):
     ''' A single linear layer which does a 1x1 conv '''
     def __init__(self, chn_in, chn_out=1, use_dropout=False):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            chn_in: (int): write your description
+            chn_out: (str): write your description
+            use_dropout: (bool): write your description
+        """
         super(NetLinLayer, self).__init__()
 
         layers = [nn.Dropout(),] if(use_dropout) else []
@@ -206,6 +287,14 @@ class NetLinLayer(nn.Module):
 # L2, DSSIM metrics
 class FakeNet(nn.Module):
     def __init__(self, use_gpu=True, colorspace='Lab'):
+        """
+        Initialize a color.
+
+        Args:
+            self: (todo): write your description
+            use_gpu: (bool): write your description
+            colorspace: (todo): write your description
+        """
         super(FakeNet, self).__init__()
         self.use_gpu = use_gpu
         self.colorspace=colorspace
@@ -213,6 +302,14 @@ class FakeNet(nn.Module):
 class L2(FakeNet):
 
     def forward(self, in0, in1):
+        """
+        Compute the forward computation.
+
+        Args:
+            self: (todo): write your description
+            in0: (todo): write your description
+            in1: (todo): write your description
+        """
         assert(in0.size()[0]==1) # currently only supports batchSize 1
 
         if(self.colorspace=='RGB'):
@@ -230,6 +327,14 @@ class L2(FakeNet):
 class DSSIM(FakeNet):
 
     def forward(self, in0, in1):
+        """
+        Forward computation. forward.
+
+        Args:
+            self: (todo): write your description
+            in0: (todo): write your description
+            in1: (todo): write your description
+        """
         assert(in0.size()[0]==1) # currently only supports batchSize 1
 
         if(self.colorspace=='RGB'):
@@ -243,6 +348,12 @@ class DSSIM(FakeNet):
         return ret_var
 
 def print_network(net):
+    """
+    Prints the current network.
+
+    Args:
+        net: (todo): write your description
+    """
     num_params = 0
     for param in net.parameters():
         num_params += param.numel()

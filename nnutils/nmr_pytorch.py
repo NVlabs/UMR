@@ -39,6 +39,16 @@ from ..nnutils import geom_utils
 
 class NMR(object):
     def __init__(self, image_size, anti_aliasing, camera_mode, perspective):
+        """
+        Initialize the camera.
+
+        Args:
+            self: (todo): write your description
+            image_size: (int): write your description
+            anti_aliasing: (str): write your description
+            camera_mode: (str): write your description
+            perspective: (todo): write your description
+        """
         renderer = neural_renderer.Renderer(image_size=image_size, anti_aliasing=anti_aliasing, camera_mode=camera_mode, perspective=perspective, background_color=[0,0,0])
         self.renderer = renderer
 
@@ -67,10 +77,26 @@ class NMR(object):
 
 class Render(nn.Module):
     def __init__(self, renderer):
+        """
+        Initialize the renderer.
+
+        Args:
+            self: (todo): write your description
+            renderer: (bool): write your description
+        """
         super(Render, self).__init__()
         self.renderer = renderer
 
     def forward(self, vertices, faces, textures = None):
+        """
+        Parameters ---------- vertices : list of vertices
+
+        Args:
+            self: (todo): write your description
+            vertices: (array): write your description
+            faces: (todo): write your description
+            textures: (todo): write your description
+        """
         # B x N x 3
         # Flipping the y-axis here to make it align with the image coordinate system!
         vs = vertices
@@ -88,6 +114,13 @@ class Render(nn.Module):
 
 class NeuralRenderer(nn.Module):
     def __init__(self, img_size = 256):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            img_size: (int): write your description
+        """
         super(NeuralRenderer, self).__init__()
         self.renderer = NMR(image_size=img_size, anti_aliasing=True, camera_mode='look_at', perspective=False)
 
@@ -101,24 +134,64 @@ class NeuralRenderer(nn.Module):
         self.offset_z = 5.
 
     def ambient_light_only(self):
+        """
+        Make the light light light.
+
+        Args:
+            self: (todo): write your description
+        """
         # Make light only ambient.
         self.renderer.renderer.light_intensity_ambient = 1
         self.renderer.renderer.light_intensity_directional = 0
 
     def set_bgcolor(self, color):
+        """
+        Set the background color.
+
+        Args:
+            self: (todo): write your description
+            color: (str): write your description
+        """
         self.renderer.renderer.background_color = color
 
     def set_light_dir(self, direction, int_dir=0.8, int_amb=0.8):
+        """
+        Set light directory.
+
+        Args:
+            self: (todo): write your description
+            direction: (str): write your description
+            int_dir: (str): write your description
+            int_amb: (str): write your description
+        """
         renderer = self.renderer.renderer
         renderer.light_direction = direction
         renderer.light_intensity_directional = int_dir
         renderer.light_intensity_ambient = int_amb
 
     def project_points(self, verts, cams):
+        """
+        Return points on the projection.
+
+        Args:
+            self: (todo): write your description
+            verts: (str): write your description
+            cams: (todo): write your description
+        """
         proj = self.proj_fn(verts, cams)
         return proj[:, :, :2]
 
     def forward(self, vertices, faces, cams, textures=None):
+        """
+        Forward vertices in vertices.
+
+        Args:
+            self: (todo): write your description
+            vertices: (array): write your description
+            faces: (todo): write your description
+            cams: (todo): write your description
+            textures: (todo): write your description
+        """
         faces = faces.int()
         verts = self.proj_fn(vertices, cams, offset_z=self.offset_z)
 

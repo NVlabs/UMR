@@ -10,18 +10,47 @@ import math
 
 class Flatten(nn.Module):
     def forward(self, x):
+        """
+        Return the size.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         return x.view(x.size()[0], -1)
 
 class Unsqueeze(nn.Module):
     def __init__(self, dim):
+        """
+        Initialize the dimension.
+
+        Args:
+            self: (todo): write your description
+            dim: (int): write your description
+        """
         super(Unsqueeze, self).__init__()
         self.dim = dim
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         return x.unsqueeze(self.dim)
 
 ## fc layers
 def fc(batch_norm, nc_inp, nc_out):
+    """
+    Batch normalization.
+
+    Args:
+        batch_norm: (todo): write your description
+        nc_inp: (todo): write your description
+        nc_out: (bool): write your description
+    """
     if batch_norm:
         return nn.Sequential(
             nn.Linear(nc_inp, nc_out, bias=True),
@@ -35,6 +64,15 @@ def fc(batch_norm, nc_inp, nc_out):
         )
 
 def fc_stack(nc_inp, nc_out, nlayers, use_bn=True):
+    """
+    Applies a stack.
+
+    Args:
+        nc_inp: (todo): write your description
+        nc_out: (bool): write your description
+        nlayers: (todo): write your description
+        use_bn: (bool): write your description
+    """
     modules = []
     for l in range(nlayers):
         modules.append(fc(use_bn, nc_inp, nc_out))
@@ -45,6 +83,16 @@ def fc_stack(nc_inp, nc_out, nlayers, use_bn=True):
 
 ## 2D convolution layers
 def conv2d(batch_norm, in_planes, out_planes, kernel_size=3, stride=1):
+    """
+    Conv2d layer.
+
+    Args:
+        batch_norm: (bool): write your description
+        in_planes: (int): write your description
+        out_planes: (str): write your description
+        kernel_size: (int): write your description
+        stride: (int): write your description
+    """
     if batch_norm:
         return nn.Sequential(
             nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, bias=True),
@@ -59,6 +107,13 @@ def conv2d(batch_norm, in_planes, out_planes, kernel_size=3, stride=1):
 
 
 def deconv2d(in_planes, out_planes):
+    """
+    Deconv2d layer.
+
+    Args:
+        in_planes: (int): write your description
+        out_planes: (str): write your description
+    """
     return nn.Sequential(
         nn.ConvTranspose2d(in_planes, out_planes, kernel_size=4, stride=2, padding=1, bias=True),
         nn.LeakyReLU(0.2,inplace=True)
@@ -66,6 +121,14 @@ def deconv2d(in_planes, out_planes):
 
 
 def upconv2d(in_planes, out_planes, mode='bilinear'):
+    """
+    Updates a 2d convolution layer.
+
+    Args:
+        in_planes: (int): write your description
+        out_planes: (str): write your description
+        mode: (str): write your description
+    """
     if mode == 'nearest':
         print('Using NN upsample!!')
     upconv = nn.Sequential(
@@ -117,6 +180,16 @@ def decoder2d(nlayers, nz_shape, nc_input, use_bn=True, nc_final=1, nc_min=8, nc
 
 ## 3D convolution layers
 def conv3d(batch_norm, in_planes, out_planes, kernel_size=3, stride=1):
+    """
+    Batch convolution layer.
+
+    Args:
+        batch_norm: (todo): write your description
+        in_planes: (int): write your description
+        out_planes: (str): write your description
+        kernel_size: (int): write your description
+        stride: (int): write your description
+    """
     if batch_norm:
         return nn.Sequential(
             nn.Conv3d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, bias=True),
@@ -131,6 +204,14 @@ def conv3d(batch_norm, in_planes, out_planes, kernel_size=3, stride=1):
 
 
 def deconv3d(batch_norm, in_planes, out_planes):
+    """
+    Deconv3d layer.
+
+    Args:
+        batch_norm: (todo): write your description
+        in_planes: (int): write your description
+        out_planes: (str): write your description
+    """
     if batch_norm:
         return nn.Sequential(
             nn.ConvTranspose3d(in_planes, out_planes, kernel_size=4, stride=2, padding=1, bias=True),
@@ -209,6 +290,12 @@ def decoder3d(nlayers, nz_shape, nc_input, use_bn=True, nc_final=1, nc_min=8, nc
 
 
 def net_init(net):
+    """
+    Initialize the network.
+
+    Args:
+        net: (todo): write your description
+    """
     for m in net.modules():
         if isinstance(m, nn.Linear):
             m.weight.data.normal_(0, 0.02)
@@ -239,6 +326,12 @@ def net_init(net):
 
 
 def bilinear_init(kernel_size=4):
+    """
+    Initialize a kernel.
+
+    Args:
+        kernel_size: (int): write your description
+    """
     # Following Caffe's BilinearUpsamplingFiller
     # https://github.com/BVLC/caffe/pull/2213/files
     import numpy as np

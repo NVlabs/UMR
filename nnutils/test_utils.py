@@ -75,6 +75,13 @@ flags.DEFINE_integer('max_eval_iter', 0, 'Maximum evaluation iterations. 0 => 1 
 #----------------------------------#
 class Tester():
     def __init__(self, opts):
+        """
+        Initialize the device.
+
+        Args:
+            self: (todo): write your description
+            opts: (todo): write your description
+        """
         self.opts = opts
         self.vis_iter = 0
         self.gpu_id = opts.gpu_id
@@ -92,6 +99,16 @@ class Tester():
 
     # helper loading function that can be used by subclasses
     def load_network(self, network, network_label, epoch_label, network_dir=None):
+        """
+        Load network from disk.
+
+        Args:
+            self: (todo): write your description
+            network: (todo): write your description
+            network_label: (str): write your description
+            epoch_label: (todo): write your description
+            network_dir: (str): write your description
+        """
         if(epoch_label > 0):
             save_filename = '{}_net_{}.pth'.format(network_label, epoch_label)
         else:
@@ -104,6 +121,13 @@ class Tester():
         return network
 
     def load_my_state_dict(self, resume_dir):
+        """
+        Loads the model dictionary from the dir.
+
+        Args:
+            self: (todo): write your description
+            resume_dir: (str): write your description
+        """
         saved_state_dict = torch.load(resume_dir)
         unwanted_keys = {"uv_sampler"}
 
@@ -116,7 +140,22 @@ class Tester():
         print("Loaded model from {}.".format(resume_dir))
 
     def save_current_visuals(self, unsup=False):
+        """
+        Saves all visual visualisation images.
+
+        Args:
+            self: (todo): write your description
+            unsup: (todo): write your description
+        """
         def norm_ip(img, min, max):
+            """
+            Assigns an array.
+
+            Args:
+                img: (todo): write your description
+                min: (float): write your description
+                max: (int): write your description
+            """
             img.clamp_(min=min, max=max)
             img.add_(-min).div_(max - min + 1e-5)
 
@@ -160,9 +199,21 @@ class Tester():
         raise NotImplementedError
 
     def get_current_visuals(self):
+        """
+        Return a list of visual visual visual visual values
+
+        Args:
+            self: (todo): write your description
+        """
         return {}
 
     def init_testing(self):
+        """
+        Initialize the underlying dataset.
+
+        Args:
+            self: (todo): write your description
+        """
         self.init_dataset()
         self.define_model()
 

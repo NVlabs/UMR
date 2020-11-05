@@ -28,6 +28,12 @@ from IPython import embed
 
 class DistModel(BaseModel):
     def name(self):
+        """
+        Return the name of model
+
+        Args:
+            self: (todo): write your description
+        """
         return self.model_name
 
     def initialize(self, model='net-lin', net='alex', model_path=None, colorspace='Lab', use_gpu=True, printNet=False, spatial=False, spatial_shape=None, spatial_order=1, spatial_factor=None, is_train=False, lr=.0001, beta1=0.5, dgx=False):
@@ -105,6 +111,15 @@ class DistModel(BaseModel):
             print('-----------------------------------------------')
 
     def forward_pair(self,in1,in2,retPerLayer=False):
+        """
+        The pair of forward distance between two networks.
+
+        Args:
+            self: (todo): write your description
+            in1: (todo): write your description
+            in2: (todo): write your description
+            retPerLayer: (bool): write your description
+        """
         if(retPerLayer):
             return self.net.forward(in1,in2, retPerLayer=True)
         else:
@@ -133,6 +148,12 @@ class DistModel(BaseModel):
         self.loss_total = self.d0
 
         def convert_output(d0):
+            """
+            Converts the output of the output.
+
+            Args:
+                d0: (todo): write your description
+            """
             if(retNumpy):
                 ans = d0.cpu().data.numpy()
                 if not self.spatial:
@@ -162,6 +183,12 @@ class DistModel(BaseModel):
 
     # ***** TRAINING FUNCTIONS *****
     def optimize_parameters(self):
+        """
+        Perform forward optimizer.
+
+        Args:
+            self: (todo): write your description
+        """
         self.forward_train()
         self.optimizer_net.zero_grad()
         self.backward_train()
@@ -169,11 +196,24 @@ class DistModel(BaseModel):
         self.clamp_weights()
 
     def clamp_weights(self):
+        """
+        Clamp weights.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.net.modules():
             if(hasattr(module, 'weight') and module.kernel_size==(1,1)):
                 module.weight.data = torch.clamp(module.weight.data,min=0)
 
     def set_input(self, data):
+        """
+        Set the input variable
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         self.input_ref = data['ref']
         self.input_p0 = data['p0']
         self.input_p1 = data['p1']
@@ -190,6 +230,12 @@ class DistModel(BaseModel):
         self.var_p1 = Variable(self.input_p1,requires_grad=True)
 
     def forward_train(self): # run forward pass
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+        """
         self.d0 = self.forward_pair(self.var_ref, self.var_p0)
         self.d1 = self.forward_pair(self.var_ref, self.var_p1)
         self.acc_r = self.compute_accuracy(self.d0,self.d1,self.input_judge)
@@ -201,6 +247,12 @@ class DistModel(BaseModel):
         return self.loss_total
 
     def backward_train(self):
+        """
+        Perform a forward loss.
+
+        Args:
+            self: (todo): write your description
+        """
         torch.mean(self.loss_total).backward()
 
     def compute_accuracy(self,d0,d1,judge):
@@ -210,6 +262,12 @@ class DistModel(BaseModel):
         return d1_lt_d0*judge_per + (1-d1_lt_d0)*(1-judge_per)
 
     def get_current_errors(self):
+        """
+        Return the mean errors
+
+        Args:
+            self: (todo): write your description
+        """
         retDict = OrderedDict([('loss_total', self.loss_total.data.cpu().numpy()),
                             ('acc_r', self.acc_r)])
 
@@ -219,6 +277,12 @@ class DistModel(BaseModel):
         return retDict
 
     def get_current_visuals(self):
+        """
+        Return a tuple of the image
+
+        Args:
+            self: (todo): write your description
+        """
         zoom_factor = 256/self.var_ref.data.size()[2]
 
         ref_img = util.tensor2im(self.var_ref.data)
@@ -234,10 +298,25 @@ class DistModel(BaseModel):
                             ('p1', p1_img_vis)])
 
     def save(self, path, label):
+        """
+        Save the network to disk.
+
+        Args:
+            self: (todo): write your description
+            path: (str): write your description
+            label: (str): write your description
+        """
         self.save_network(self.net, path, '', label)
         self.save_network(self.rankLoss.net, path, 'rank', label)
 
     def update_learning_rate(self,nepoch_decay):
+        """
+        R update learning rate.
+
+        Args:
+            self: (todo): write your description
+            nepoch_decay: (todo): write your description
+        """
         lrd = self.lr / nepoch_decay
         lr = self.old_lr - lrd
 

@@ -15,6 +15,27 @@ class SoftRasterizeFunction(Function):
                 sigma_val=1e-5, dist_func='euclidean', dist_eps=1e-4,
                 gamma_val=1e-4, aggr_func_rgb='softmax', aggr_func_alpha='prod',
                 texture_type='surface'):
+        """
+        Draw image forward image.
+
+        Args:
+            ctx: (todo): write your description
+            face_vertices: (todo): write your description
+            textures: (todo): write your description
+            image_size: (int): write your description
+            background_color: (todo): write your description
+            near: (todo): write your description
+            far: (todo): write your description
+            fill_back: (todo): write your description
+            eps: (float): write your description
+            sigma_val: (todo): write your description
+            dist_func: (todo): write your description
+            dist_eps: (todo): write your description
+            gamma_val: (todo): write your description
+            aggr_func_rgb: (todo): write your description
+            aggr_func_alpha: (todo): write your description
+            texture_type: (str): write your description
+        """
 
         # face_vertices: [nb, nf, 9]
         # textures: [nb, nf, 9]
@@ -76,6 +97,15 @@ class SoftRasterizeFunction(Function):
 
     @staticmethod
     def backward(ctx, grad_soft_colors, grad_p2f_info=None, grad_aggrs_info=None):
+        """
+        Perform backward backward backward backward backward.
+
+        Args:
+            ctx: (todo): write your description
+            grad_soft_colors: (todo): write your description
+            grad_p2f_info: (todo): write your description
+            grad_aggrs_info: (todo): write your description
+        """
 
         face_vertices, textures, soft_colors, faces_info, aggrs_info = ctx.saved_tensors
         image_size = ctx.image_size
@@ -114,6 +144,26 @@ def soft_rasterize(face_vertices, textures, image_size=256,
                    sigma_val=1e-5, dist_func='euclidean', dist_eps=1e-4,
                    gamma_val=1e-4, aggr_func_rgb='softmax', aggr_func_alpha='prod',
                    texture_type='surface'):
+    """
+    Rasterize image raster.
+
+    Args:
+        face_vertices: (bool): write your description
+        textures: (todo): write your description
+        image_size: (int): write your description
+        background_color: (str): write your description
+        near: (todo): write your description
+        far: (todo): write your description
+        fill_back: (str): write your description
+        eps: (float): write your description
+        sigma_val: (float): write your description
+        dist_func: (todo): write your description
+        dist_eps: (float): write your description
+        gamma_val: (todo): write your description
+        aggr_func_rgb: (todo): write your description
+        aggr_func_alpha: (todo): write your description
+        texture_type: (str): write your description
+    """
     if face_vertices.device == "cpu":
         raise TypeError('Rasterize module supports only cuda Tensors')
 

@@ -8,17 +8,41 @@ import soft_renderer.functional as srf
 
 class AmbientLighting(nn.Module):
     def __init__(self, light_intensity=0.5, light_color=(1,1,1)):
+        """
+        Initialize the light.
+
+        Args:
+            self: (todo): write your description
+            light_intensity: (int): write your description
+            light_color: (str): write your description
+        """
         super(AmbientLighting, self).__init__()
 
         self.light_intensity = light_intensity
         self.light_color = light_color
 
     def forward(self, light):
+        """
+        Make a forward light.
+
+        Args:
+            self: (todo): write your description
+            light: (todo): write your description
+        """
         return srf.ambient_lighting(light, self.light_intensity, self.light_color)
 
 
 class DirectionalLighting(nn.Module):
     def __init__(self, light_intensity=0.5, light_color=(1,1,1), light_direction=(0,1,0)):
+        """
+        Initialize the light.
+
+        Args:
+            self: (todo): write your description
+            light_intensity: (int): write your description
+            light_color: (str): write your description
+            light_direction: (str): write your description
+        """
         super(DirectionalLighting, self).__init__()
 
         self.light_intensity = light_intensity
@@ -26,6 +50,14 @@ class DirectionalLighting(nn.Module):
         self.light_direction = light_direction
 
     def forward(self, light, normals):
+        """
+        Make a forward light.
+
+        Args:
+            self: (todo): write your description
+            light: (todo): write your description
+            normals: (todo): write your description
+        """
         return srf.directional_lighting(light, normals,
                                         self.light_intensity, self.light_color, 
                                         self.light_direction)
@@ -36,6 +68,18 @@ class Lighting(nn.Module):
                  intensity_ambient=0.5, color_ambient=[1,1,1],
                  intensity_directionals=0.5, color_directionals=[1,1,1],
                  directions=[0,1,0]):
+        """
+        Initialize the light.
+
+        Args:
+            self: (todo): write your description
+            light_mode: (str): write your description
+            intensity_ambient: (todo): write your description
+            color_ambient: (todo): write your description
+            intensity_directionals: (str): write your description
+            color_directionals: (str): write your description
+            directions: (todo): write your description
+        """
         super(Lighting, self).__init__()
 
         if light_mode not in ['surface', 'vertex']:
@@ -48,6 +92,13 @@ class Lighting(nn.Module):
                                                                directions)])
 
     def forward(self, mesh):
+        """
+        Find the forward light.
+
+        Args:
+            self: (todo): write your description
+            mesh: (todo): write your description
+        """
         if self.light_mode == 'surface':
             light = torch.zeros_like(mesh.faces, dtype=torch.float32).to(mesh.device)
             light = light.contiguous()

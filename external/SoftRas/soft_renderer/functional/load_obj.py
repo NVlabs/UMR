@@ -26,6 +26,14 @@ def load_mtl(filename_mtl):
 
 
 def load_textures(filename_obj, filename_mtl, texture_res):
+    """
+    Load a list of vertices file.
+
+    Args:
+        filename_obj: (str): write your description
+        filename_mtl: (str): write your description
+        texture_res: (todo): write your description
+    """
     # load vertices
     vertices = []
     with open(filename_obj) as f:

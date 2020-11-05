@@ -14,6 +14,16 @@ from models import dist_model
 
 class PerceptualLoss(torch.nn.Module):
     def __init__(self, model='net-lin', net='vgg', use_gpu=True, dgx=False): # VGG using our perceptually-learned weights (LPIPS metric)
+        """
+        Initialize model
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            net: (todo): write your description
+            use_gpu: (bool): write your description
+            dgx: (int): write your description
+        """
     # def __init__(self, model='net', net='vgg', use_gpu=True): # "default" way of using VGG
         print('Setting up Perceptual loss..')
         self.model = dist_model.DistModel()
@@ -59,10 +69,22 @@ if __name__ == '__main__':
     # As optimization, test backprop
     class PerceptModel(torch.nn.Module):
         def __init__(self):
+            """
+            Initialize the graph.
+
+            Args:
+                self: (todo): write your description
+            """
             super(PerceptModel, self).__init__()
             self.pred = torch.nn.Parameter(pred.data)
 
         def forward(self):
+            """
+            Perform forward.
+
+            Args:
+                self: (todo): write your description
+            """
             return self.pred
 
     model = PerceptModel()

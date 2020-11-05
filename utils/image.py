@@ -34,6 +34,13 @@ import torchvision.utils as vutils
 
 
 def resize_img(img, scale_factor):
+    """
+    Resize an image
+
+    Args:
+        img: (array): write your description
+        scale_factor: (float): write your description
+    """
     new_size = (np.round(np.array(img.shape[:2]) * scale_factor)).astype(int)
     new_img = cv2.resize(img, (new_size[1], new_size[0]))
     # This is scale factor of [height, width] i.e. [y, x]
@@ -141,6 +148,13 @@ def compute_dt_barrier(mask, k=50):
     return dist
 
 def get_coordinate_tensors(x_max, y_max):
+    """
+    Returns a list of - based on the coordinates.
+
+    Args:
+        x_max: (int): write your description
+        y_max: (todo): write your description
+    """
     x_map = np.tile(np.arange(x_max), (y_max,1))/x_max*2 - 1.0
     y_map = np.tile(np.arange(y_max), (x_max,1)).T/y_max*2 - 1.0
 
@@ -150,6 +164,13 @@ def get_coordinate_tensors(x_max, y_max):
     return x_map_tensor, y_map_tensor
 
 def get_center(part_map, self_referenced=False):
+    """
+    Return the center of the map.
+
+    Args:
+        part_map: (str): write your description
+        self_referenced: (str): write your description
+    """
 
     h,w = part_map.shape
     x_map, y_map = get_coordinate_tensors(h,w)
@@ -207,10 +228,24 @@ def sample_prob(part_prob, mask, center, num_samples = 10, ch = 1):
 
 class Colorize(object):
     def __init__(self, n=22):
+        """
+        Initialize the color map.
+
+        Args:
+            self: (todo): write your description
+            n: (int): write your description
+        """
         self.cmap = color_map(n)
         self.cmap = torch.from_numpy(self.cmap[:n])
 
     def __call__(self, gray_image):
+        """
+        Call the color image.
+
+        Args:
+            self: (todo): write your description
+            gray_image: (array): write your description
+        """
         size = gray_image.shape
         color_image = np.zeros((3, size[0], size[1]))
 
@@ -227,7 +262,21 @@ class Colorize(object):
         return color_image
 
 def color_map(N=256, normalized=False):
+    """
+    Return a color map.
+
+    Args:
+        N: (int): write your description
+        normalized: (bool): write your description
+    """
     def bitget(byteval, idx):
+        """
+        Return the value of a byteval.
+
+        Args:
+            byteval: (todo): write your description
+            idx: (int): write your description
+        """
         return ((byteval & (1 << idx)) != 0)
 
     dtype = 'float32' if normalized else 'uint8'
@@ -248,10 +297,24 @@ def color_map(N=256, normalized=False):
 
 class BatchColorize(object):
     def __init__(self, n=40):
+        """
+        Set the color map.
+
+        Args:
+            self: (todo): write your description
+            n: (int): write your description
+        """
         self.cmap = color_map(n)
         self.cmap = torch.from_numpy(self.cmap[:n])
 
     def __call__(self, gray_image):
+        """
+        Call color_image
+
+        Args:
+            self: (todo): write your description
+            gray_image: (todo): write your description
+        """
         size = gray_image.size()
         color_image = torch.zeros(size[0], 3, size[1], size[2])
 
@@ -268,7 +331,21 @@ class BatchColorize(object):
         return color_image
 
 def color_map(N=256, normalized=True):
+    """
+    Return a color map.
+
+    Args:
+        N: (int): write your description
+        normalized: (bool): write your description
+    """
     def bitget(byteval, idx):
+        """
+        Return the value of a byteval.
+
+        Args:
+            byteval: (todo): write your description
+            idx: (int): write your description
+        """
         return ((byteval & (1 << idx)) != 0)
 
     dtype = 'float32' if normalized else 'uint8'

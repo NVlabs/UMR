@@ -49,6 +49,12 @@ opts = flags.FLAGS
 
 class ShapenetTester(test_utils.Tester):
     def define_model(self):
+        """
+        Define the model
+
+        Args:
+            self: (todo): write your description
+        """
         opts = self.opts
 
         # define model
@@ -79,6 +85,13 @@ class ShapenetTester(test_utils.Tester):
         return
 
     def load_my_state_dict(self, resume_dir):
+        """
+        Load a dictionary of the state variables. model.
+
+        Args:
+            self: (todo): write your description
+            resume_dir: (str): write your description
+        """
         saved_state_dict = torch.load(resume_dir)
         # the tensors may have different batch size
         unwanted_keys = {"uv_sampler"}
@@ -91,11 +104,23 @@ class ShapenetTester(test_utils.Tester):
         print(tf_visualizer.green("Loaded model from {}.".format(resume_dir)))
 
     def init_dataset(self):
+        """
+        Initialize dataset.
+
+        Args:
+            self: (todo): write your description
+        """
         self.resnet_transform = torchvision.transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
             std=[0.229, 0.224, 0.225])
 
     def demo(self):
+        """
+        Perform a tf.
+
+        Args:
+            self: (todo): write your description
+        """
         # load image
         img = self.preprocess_image()
         batch = {'img': torch.Tensor(np.expand_dims(img, 0)).repeat(opts.batch_size, 1, 1, 1)}
@@ -167,9 +192,24 @@ class ShapenetTester(test_utils.Tester):
             print(tf_visualizer.green("Results saved at {}.".format(self.opts.out_path)))
 
     def save_image(self, img, path):
+        """
+        Saves an image to disk.
+
+        Args:
+            self: (todo): write your description
+            img: (array): write your description
+            path: (str): write your description
+        """
         vutils.save_image(img, path)
 
     def ang2quat(self, angles):
+        """
+        Convert a quaternion.
+
+        Args:
+            self: (todo): write your description
+            angles: (array): write your description
+        """
         # convert from Eular angles to quaternion
         axis = torch.eye(3).float().cuda()
         q_az = geom_utils.convert_ax_angle_to_quat(axis[1], angles[...,0])
@@ -181,6 +221,12 @@ class ShapenetTester(test_utils.Tester):
         return quat
 
     def preprocess_image(self):
+        """
+        Preprocess the image into an image
+
+        Args:
+            self: (todo): write your description
+        """
         # load image from disk, we assume object is centered
         print(tf_visualizer.green("Read image from {}.".format(self.opts.img_path)))
         img = imageio.imread(self.opts.img_path) / 255.0
@@ -204,6 +250,12 @@ class ShapenetTester(test_utils.Tester):
         return img
 
 def set_seed(seed):
+    """
+    Benchmark a random seed.
+
+    Args:
+        seed: (int): write your description
+    """
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     torch.manual_seed(seed)
@@ -212,6 +264,12 @@ def set_seed(seed):
     random.seed(seed)
 
 def main(_):
+    """
+    Main function.
+
+    Args:
+        _: (int): write your description
+    """
     set_seed(0)
     tester = ShapenetTester(opts)
     tester.init_testing()

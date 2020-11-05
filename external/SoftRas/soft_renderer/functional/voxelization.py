@@ -7,6 +7,14 @@ import soft_renderer.cuda.voxelization as voxelization_cuda
 
 
 def voxelize_sub1(faces, size, dim):
+    """
+    Voxelize a voxel mesh.
+
+    Args:
+        faces: (todo): write your description
+        size: (int): write your description
+        dim: (int): write your description
+    """
     bs = faces.size(0)
     nf = faces.size(1)
     if dim == 0:
@@ -17,12 +25,26 @@ def voxelize_sub1(faces, size, dim):
     return voxelization_cuda.voxelize_sub1(faces, voxels)[0].transpose(dim + 1, -1)
 
 def voxelize_sub2(faces, size):
+    """
+    Voxelize a voxel voxels.
+
+    Args:
+        faces: (todo): write your description
+        size: (int): write your description
+    """
     bs = faces.size(0)
     nf = faces.size(1)
     voxels = torch.zeros(bs, size, size, size).int().cuda()
     return voxelization_cuda.voxelize_sub2(faces, voxels)[0]
 
 def voxelize_sub3(faces, voxels):
+    """
+    Voxelize a voxelization of a list of faces.
+
+    Args:
+        faces: (list): write your description
+        voxels: (todo): write your description
+    """
     bs = voxels.size(0)
     vs = voxels.size(1)
     visible = torch.zeros_like(voxels, dtype=torch.int32).cuda()
@@ -40,6 +62,14 @@ def voxelize_sub3(faces, voxels):
 
 
 def voxelization(faces, size, normalize=False):
+    """
+    Create a voxelization of a mesh.
+
+    Args:
+        faces: (list): write your description
+        size: (int): write your description
+        normalize: (bool): write your description
+    """
     faces = faces.clone()
     if normalize:
         pass

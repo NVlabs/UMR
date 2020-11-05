@@ -10,6 +10,13 @@ import numpy as np
 import torch
 
 def get_coordinate_tensors(x_max, y_max):
+    """
+    Get the coordinates of the coordinates of a tensorors.
+
+    Args:
+        x_max: (int): write your description
+        y_max: (todo): write your description
+    """
     x_map = np.tile(np.arange(x_max), (y_max,1))/x_max*2 - 1.0
     y_map = np.tile(np.arange(y_max), (x_max,1)).T/y_max*2 - 1.0
 
@@ -19,6 +26,13 @@ def get_coordinate_tensors(x_max, y_max):
     return x_map_tensor, y_map_tensor
 
 def get_center(part_map, self_referenced=False):
+    """
+    Return the center of the map.
+
+    Args:
+        part_map: (str): write your description
+        self_referenced: (str): write your description
+    """
 
     h,w = part_map.shape
     x_map, y_map = get_coordinate_tensors(h,w)
@@ -35,6 +49,15 @@ def get_center(part_map, self_referenced=False):
     return x_center, y_center
 
 def get_centers(part_maps, detach_k=True, epsilon=1e-3, self_ref_coord=False):
+    """
+    Return the coordinates of the coordinates of the centers.
+
+    Args:
+        part_maps: (str): write your description
+        detach_k: (str): write your description
+        epsilon: (float): write your description
+        self_ref_coord: (str): write your description
+    """
     C,H,W = part_maps.shape
     centers = []
     for c in range(C):
@@ -46,6 +69,12 @@ def get_centers(part_maps, detach_k=True, epsilon=1e-3, self_ref_coord=False):
     return torch.cat(centers, dim=0)
 
 def batch_get_centers(pred_softmax):
+    """
+    Get the number of the tensors.
+
+    Args:
+        pred_softmax: (int): write your description
+    """
     B,C,H,W = pred_softmax.shape
 
     centers_list = []
@@ -55,10 +84,24 @@ def batch_get_centers(pred_softmax):
 
 class Colorize(object):
     def __init__(self, n=22):
+        """
+        Initialize the color map.
+
+        Args:
+            self: (todo): write your description
+            n: (int): write your description
+        """
         self.cmap = color_map(n)
         self.cmap = torch.from_numpy(self.cmap[:n])
 
     def __call__(self, gray_image):
+        """
+        Call the color image.
+
+        Args:
+            self: (todo): write your description
+            gray_image: (array): write your description
+        """
         size = gray_image.shape
         color_image = np.zeros((3, size[0], size[1]), dtype=np.uint8)
 
@@ -75,7 +118,21 @@ class Colorize(object):
         return color_image
 
 def color_map(N=256, normalized=False):
+    """
+    Return a color map.
+
+    Args:
+        N: (int): write your description
+        normalized: (bool): write your description
+    """
     def bitget(byteval, idx):
+        """
+        Return the value of a byteval.
+
+        Args:
+            byteval: (todo): write your description
+            idx: (int): write your description
+        """
         return ((byteval & (1 << idx)) != 0)
 
     dtype = 'float32' if normalized else 'uint8'
@@ -95,6 +152,13 @@ def color_map(N=256, normalized=False):
     return cmap
 
 def denseCRF(img, pred):
+    """
+    Dense - f2dense )
+
+    Args:
+        img: (array): write your description
+        pred: (todo): write your description
+    """
     import pydensecrf.densecrf as dcrf
     from pydensecrf.utils import unary_from_softmax
     N,H,W = pred.shape
