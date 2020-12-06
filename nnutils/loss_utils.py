@@ -192,60 +192,55 @@ def entropy_loss(A):
     return torch.mean(entropy)
 
 class CorrLossChamfer(nn.Module):
-    def __init__(self, scops_path, image_size,
-                 weights = torch.Tensor([0.45, 0.45, 0.05, 0.05])):
+    def __init__(self, scops_path, image_size):
         super(CorrLossChamfer,self).__init__()
-        """
-        Caculate Chamfer distance of four parts.
-        The indices of each part (head_idx etc.) could be a path or torch Tensor.
-        """
         head_vertices = np.load(osp.join(scops_path, "vertices_idx/head_vertices.npy"))
         self.head_vertices = torch.from_numpy(head_vertices).long()
+        self.head_num = len(self.head_vertices)
 
         belly_vertices = np.load(osp.join(scops_path, "vertices_idx/belly_vertices.npy"))
         self.belly_vertices = torch.from_numpy(belly_vertices).long()
+        self.belly_num = len(self.belly_vertices)
 
         neck_vertices = np.load(osp.join(scops_path, "vertices_idx/neck_vertices.npy"))
         self.neck_vertices = torch.from_numpy(neck_vertices).long()
+        self.neck_num = len(self.neck_vertices)
 
         back_vertices = np.load(osp.join(scops_path, "vertices_idx/back_vertices.npy"))
         self.back_vertices = torch.from_numpy(back_vertices).long()
-
-        self.renderer = SoftRenderer(image_size)
-
-        # some parts with large deformation should be down-weighted
-        # calculate the weights based on number of vertices in each part
-        self.head_num = len(self.head_vertices)
-        self.belly_num = len(self.belly_vertices)
-        self.neck_num = len(self.neck_vertices)
         self.back_num = len(self.back_vertices)
 
-        self.weights = weights
+        self.renderer = SoftRenderer(image_size)
+        self.weights = [1, 1, 0, 0]
+
+        nums = [self.head_vertices.size(0)]
+        nums.append(nums[0] + self.belly_vertices.size(0))
+        nums.append(nums[1] + self.neck_vertices.size(0))
+        nums.append(nums[2] + self.back_vertices.size(0))
+        self.nums = nums
+
 
     def forward(self, head_points, belly_points, neck_points, back_points, verts, cams, avg = True):
         bs = head_points.size(0)
 
+        # predicted vertices
         head_vert_coords = verts[:, self.head_vertices, :]
         belly_vert_coords = verts[:, self.belly_vertices, :]
         back_vert_coords = verts[:, self.back_vertices, :]
         neck_vert_coords = verts[:, self.neck_vertices, :]
+
         vert_coords = torch.cat((head_vert_coords, belly_vert_coords, neck_vert_coords, back_vert_coords), dim = 1)
 
         vert2d = self.renderer.project_points(vert_coords, cams)
-        cdist = None
-        if(self.head_num > 0):
-            head_cdist1, _, _, _ = distChamfer(vert2d[:, :self.head_num, :], head_points)
-            cdist = head_cdist1 * self.weights[0]
-        if(self.belly_num > 0):
-            belly_cdist1, _, _, _ = distChamfer(vert2d[:, self.head_num:self.head_num + self.belly_num, :], belly_points)
-            cdist = torch.cat((cdist, belly_cdist1 * self.weights[1]), dim = 1)
-        if(self.neck_num > 0):
-            neck_cdist1, _, _, _ = distChamfer(vert2d[:, self.head_num + self.belly_num:self.head_num + self.belly_num + self.neck_num, :], neck_points)
-            cdist = torch.cat((cdist, neck_cdist1 * self.weights[2]), dim = 1)
-        if(self.back_num > 0):
-            back_cdist1, _, _, _ = distChamfer(vert2d[:, self.head_num + self.belly_num + self.neck_num:, :], back_points)
-            cdist = torch.cat((cdist, back_cdist1 * self.weights[3]), dim = 1)
 
+        # Chamfer loss
+        nums = self.nums
+        head_cdist1, _, _, _ = distChamfer(vert2d[:, :nums[0], :], head_points)
+        belly_cdist1, _, _, _ = distChamfer(vert2d[:, nums[0]:nums[1], :], belly_points)
+        neck_cdist1, _, _, _ = distChamfer(vert2d[:, nums[1]:nums[2], :], neck_points)
+        back_cdist1, _, _, _ = distChamfer(vert2d[:, nums[2]:nums[3], :], back_points)
+
+        cdist = torch.cat((head_cdist1 * self.weights[0], belly_cdist1 * self.weights[1], neck_cdist1 * self.weights[2], back_cdist1 * self.weights[3]), dim = 1)
         loss = torch.mean(cdist, dim = 1)
         if(avg):
             return torch.mean(loss), vert2d
