@@ -301,6 +301,8 @@ class ShapenetTester(test_utils.Tester):
         mesh_ = sr.Mesh(mean_v, self.faces, vert_tex.view(1, 642, 3), texture_type='vertex')
         mesh_path = osp.join(opts.out_dir,"vertex_label.obj")
         mesh_.save_obj(mesh_path, save_texture=True)
+        
+        torch.save(self.model.mean_v.detach().cpu(), osp.join(opts.out_dir, "mean_v.pth"))
 
         print(tf_visualizer.green("Semantic template saved at {}.".format(opts.out_dir)))
 
